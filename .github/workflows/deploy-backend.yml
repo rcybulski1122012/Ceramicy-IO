@@ -36,3 +36,4 @@ jobs:
           heroku_email: "radekcybulski1122012@gmail.com"
           buildpack: "heroku/python"
           procfile: "web: gunicorn -w 1 -k uvicorn.workers.UvicornWorker app.main:app"
+          appdir: "backend"
