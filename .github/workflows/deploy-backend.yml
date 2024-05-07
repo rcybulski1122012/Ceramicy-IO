@@ -1,0 +1,38 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Run tests
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12.3'
+      - name: Install dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run PyTest
+        run: pytest
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Heroku
+    needs: test
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.13.15
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "ceramicy-io"
+          heroku_email: "radekcybulski1122012@gmail.com"
+          buildpack: "heroku/python"
+          procfile: "web: gunicorn -w 1 -k uvicorn.workers.UvicornWorker app.main:app"
