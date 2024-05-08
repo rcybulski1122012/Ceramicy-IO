@@ -24,9 +24,8 @@ erDiagram
         string id PK
         string name
         string quiz_d FK
-        string solution
+        string code_smells
         string url
-        int code_smells_count
     }
     
     USER {
@@ -40,10 +39,10 @@ erDiagram
     
     USER_QUIZ {
         string id PK
-        string user_id PK
-        string quiz_id PK
+        string user_id FK
+        string quiz_id FK
         string session_id FK
-        string solutions
+        string solution
         string score
         timestamp created_at
     }
@@ -58,9 +57,9 @@ erDiagram
     }
     
     USER_SESSION {
-        string user_id PK
+        string user_name PK
         string session_id PK
-        boolean is_finished 
+        string solution
         timestamp created_at
     }
     
@@ -72,7 +71,6 @@ erDiagram
     USER ||--o{ SESSION : "hosts"
 %%    SESSION ||--o{ QUIZ : ""
     USER_QUIZ ||--o| SESSION : "part of"
-    USER ||--o{ USER_SESSION : "participates"
     USER_SESSION ||--o{ SESSION : ""
     
     
