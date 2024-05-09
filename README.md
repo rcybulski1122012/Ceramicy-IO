@@ -24,15 +24,9 @@ erDiagram
         string name
         string author_id FK
         string main_language
-        timestamp created_at
-    }
-    
-    FILE {
-        string id PK
-        string name
-        string quiz_d FK
+        array file_urls
         string code_smells
-        string url
+        timestamp created_at
     }
     
     USER {
@@ -71,7 +65,6 @@ erDiagram
     }
     
     
-    QUIZ ||--|{ FILE : "has"
     USER ||--o{ QUIZ : "creates"
     USER ||--o{ USER_QUIZ : "solves"
     QUIZ ||--o{ USER_QUIZ : "solved by"

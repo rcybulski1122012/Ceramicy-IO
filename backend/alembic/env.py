@@ -2,6 +2,7 @@ import asyncio
 
 from alembic import context
 from app.models.base import Base
+from app.models.quiz import *
 from app.settings import settings
 from sqlalchemy.ext.asyncio import create_async_engine
 
