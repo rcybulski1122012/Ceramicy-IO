@@ -1,0 +1,16 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - setup-frontend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: validation
+
+    steps:
+    - name: Print deployment message
+      run: echo "Deploying to production..."
