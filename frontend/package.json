@@ -7,7 +7,6 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "task": "npm run test-ci && npm run lint && npm run check-types && npm run format",
-    "task-ci": "npm run test-ci && npm run lint && npm run check-types && npm run check-formatting",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "check-types": "tsc --noEmit",
     "test": "vitest",
