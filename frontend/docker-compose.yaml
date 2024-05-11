@@ -1,0 +1,10 @@
+services:
+  code_smell_app:
+    image: code_smell_app-image
+    container_name: code_smell_app
+    build:
+      context: .
+    volumes:
+      - ./:/app/
+    ports:
+      - '5173:5173'
