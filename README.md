@@ -24,15 +24,9 @@ erDiagram
         string name
         string author_id FK
         string main_language
-        timestamp created_at
-    }
-    
-    FILE {
-        string id PK
-        string name
-        string quiz_d FK
+        array file_urls
         string code_smells
-        string url
+        timestamp created_at
     }
     
     USER {
@@ -50,7 +44,7 @@ erDiagram
         string quiz_id FK
         string session_id FK
         string solution
-        string score
+        double score
         timestamp created_at
     }
     
@@ -59,7 +53,6 @@ erDiagram
         string id PK
         string host_id FK
         string quiz_id FK
-        string invite_link
         timestamp created_at
     }
     
@@ -71,7 +64,6 @@ erDiagram
     }
     
     
-    QUIZ ||--|{ FILE : "has"
     USER ||--o{ QUIZ : "creates"
     USER ||--o{ USER_QUIZ : "solves"
     QUIZ ||--o{ USER_QUIZ : "solved by"
