@@ -44,7 +44,7 @@ erDiagram
         string quiz_id FK
         string session_id FK
         string solution
-        string score
+        double score
         timestamp created_at
     }
     
@@ -53,7 +53,6 @@ erDiagram
         string id PK
         string host_id FK
         string quiz_id FK
-        string invite_link
         timestamp created_at
     }
     
