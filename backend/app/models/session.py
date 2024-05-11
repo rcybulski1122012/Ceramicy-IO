@@ -19,7 +19,7 @@ class Session(Base):
 
     host: Mapped["User"] = relationship()
     quiz: Mapped["Quiz"] = relationship()
-    students: Mapped[list["UserSession"]] = relationship(back_populates="session")
+    participants: Mapped[list["UserSession"]] = relationship(back_populates="session")
 
 
 class UserSession(Base):
@@ -29,4 +29,4 @@ class UserSession(Base):
     session_id: Mapped[str] = mapped_column(ForeignKey("session.id"))
     solution: Mapped[dict[str, Any]]
 
-    session: Mapped["Session"] = relationship(back_populates="students")
+    session: Mapped[Session] = relationship(back_populates="participants")
