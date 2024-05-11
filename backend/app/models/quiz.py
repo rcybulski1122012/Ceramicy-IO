@@ -20,7 +20,7 @@ class Quiz(Base):
     file_urls: Mapped[list[str]]
     code_smells: Mapped[dict[str, Any]]
 
-    author: Mapped[Optional["User"]] = relationship(back_populates="created_quizzes")
+    author: Mapped[Optional["User"]] = relationship()
 
 
 class UserQuizAssociation(Base):
@@ -35,7 +35,7 @@ class UserQuizAssociation(Base):
 
     user: Mapped["User"] = relationship()
     quiz: Mapped["Quiz"] = relationship()
-    session: Mapped[Optional["Session"]] = relationship(back_populates="user_quiz_association")
+    session: Mapped[Optional["Session"]] = relationship()
 
 
 
