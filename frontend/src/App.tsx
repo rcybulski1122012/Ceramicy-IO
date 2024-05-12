@@ -5,24 +5,21 @@ import MainPage from './components/pages/MainPage';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <MainPage />,
   },
   {
-    path: "/quiz/:quizId",
+    path: '/quiz/:quizId',
     element: <div>Quiz!</div>,
   },
 ]);
 
-
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <RouterProvider router={router}>
-
-      </RouterProvider>
+      <RouterProvider router={router}></RouterProvider>
     </ChakraProvider>
-  )
+  );
 }
 
 export default App;
