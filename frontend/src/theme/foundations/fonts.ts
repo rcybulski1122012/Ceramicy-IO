@@ -1,5 +1,6 @@
 import '@fontsource/roboto'
 import '@fontsource/raleway'
+import { RouterProvider } from 'react-router-dom'
 
 export const fonts = {
     heading: `'Roboto', sans-serif`,
@@ -23,7 +24,6 @@ export const fontSizes = {
     "9xl": "8rem",
 }
 
-
 export const fontWeights = {
     hairline: 100,
     thin: 200,
@@ -34,4 +34,26 @@ export const fontWeights = {
     bold: 700,
     extrabold: 800,
     black: 900,
+}
+
+
+export const textStyles = {
+    h1: {
+        fontSize: ['48px'],
+        fontWeight: 'bold',
+        lineHeight: '110%',
+        letterSpacing: '-2%',
+    },
+    h2: {
+        fontSize: ['36px'],
+        fontWeight: 'semibold',
+        lineHeight: '110%',
+        letterSpacing: '-1%',
+    },
+    h3: {
+        fontSize: ['24px'],
+        fontWeight: 'semibold',
+        lineHeight: '110%',
+        letterSpacing: '-1%',
+    },
 }

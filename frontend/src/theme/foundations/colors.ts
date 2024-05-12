@@ -1,10 +1,10 @@
 const colors = {
     "primary": "#42BD8E",
-    "secondary": "#81DAD8",
+    "secondary": "#3AC5C2",
     "warning": "#D2885A",
     "error": "#CD3232",
     "gray": {
-        "50": "#F0F2F4",
+        "50": "#EFF2F5",
         "100": "#D6DBE0",
         "200": "#BCC3CD",
         "300": "#A2ACB9",
