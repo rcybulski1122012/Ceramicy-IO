@@ -16,6 +16,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fontsource/raleway": "^5.0.19",
+    "@fontsource/roboto": "^5.0.13",
+    "framer-motion": "^11.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "vitest": "^1.6.0"

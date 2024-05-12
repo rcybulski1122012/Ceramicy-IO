@@ -1,7 +1,11 @@
-import './App.css';
+import { ChakraProvider } from '@chakra-ui/react';
+import theme from './theme/theme';
+
 
 function App() {
-  return <p>Hello from Code Smell App!</p>;
+  return <ChakraProvider theme={theme}>
+    <QuizzApp></QuizzApp>
+  </ChakraProvider>
 }
 
 export default App;
