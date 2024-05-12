@@ -5,10 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "suppressImplicitAnyIndexErrors": true // Add this line to suppress TS2339 error
+    "strict": true
   },
-  "include": [
-    "vite.config.ts"
-  ]
+  "include": ["vite.config.ts"]
 }

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "gen:theme-typings": "chakra-cli tokens src/theme/theme.ts",
     "task": "npm run test-ci && npm run lint && npm run check-types && npm run format",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "check-types": "tsc --noEmit",
@@ -29,6 +30,7 @@
     "vitest": "^1.6.0"
   },
   "devDependencies": {
+    "@chakra-ui/cli": "^2.4.1",
     "@testing-library/react": "^15.0.6",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",

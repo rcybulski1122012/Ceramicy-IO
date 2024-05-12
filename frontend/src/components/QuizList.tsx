@@ -38,9 +38,9 @@ const QuizList = ({ quizzes, onQuizSelection }: QuizListProps) => {
             sx={
               isSelected(quiz.id)
                 ? {
-                  background: 'green.50 !important',
-                  borderRight: `4px solid ${theme.colors.primary}`,
-                }
+                    background: 'green.50 !important',
+                    borderRight: `4px solid ${theme.colors.primary}`,
+                  }
                 : {}
             }
           >
