@@ -41,7 +41,7 @@ exclude-extend = '''
 [tool.ruff]
 line-length = 120
 select = ["E", "F", "UP", "I"]
-ignore = ["E501"]
+ignore = ["E501", "UP007"]
 fixable = ["A", "B", "C", "D", "E", "F", "I"]
 exclude = [
     ".direnv",

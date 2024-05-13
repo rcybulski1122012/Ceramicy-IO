@@ -1,13 +1,13 @@
-from typing import Any, TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
-from sqlalchemy import func, ForeignKey
+from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
 
 if TYPE_CHECKING:
-    from app.models.user import User
     from app.models.session import Session
+    from app.models.user import User
 
 
 class Quiz(Base):
@@ -19,8 +19,7 @@ class Quiz(Base):
     main_language: Mapped[str]
     file_urls: Mapped[list[str]]
     code_smells: Mapped[dict[str, Any]]
-
-    author: Mapped[Optional["User"]] = relationship(back_populates="created_quizzes")
+    author: Mapped[Optional["User"]] = relationship()
 
 
 class UserQuizAssociation(Base):
@@ -35,7 +34,4 @@ class UserQuizAssociation(Base):
 
     user: Mapped["User"] = relationship()
     quiz: Mapped["Quiz"] = relationship()
-    session: Mapped[Optional["Session"]] = relationship(back_populates="user_quiz_association")
-
-
-
+    session: Mapped[Optional["Session"]] = relationship()
