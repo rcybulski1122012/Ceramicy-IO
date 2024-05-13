@@ -3,7 +3,23 @@
 ## Getting Started
 
 # Backend Development
-To just run the backend app, the only command you have to execute is:
+
+For backend development, follow the steps below to set up a consistent environment for local development.
+
+## Create a `.env` file
+
+Copy the content of  `.env.example` and adjust the values as needed.
+The `docker-compose` file will automatically load the environment variables from the file.
+If you want to run the application without `Docker` you can use `direnv` or load the environment variables manually.
+
+```shell
+source .env
+```
+
+## Run the database and the application
+
+All you need to do is run the following command:
+
 ```shell
 make build
 ```
@@ -33,6 +49,7 @@ make shell
 #### Tests, linter, type-checking and formatter:
 ```shell
 make task
+```
 
 ## Definition of done
 
@@ -55,7 +72,7 @@ erDiagram
         string code_smells
         timestamp created_at
     }
-    
+
     USER {
         string id PK
         string name
@@ -64,7 +81,7 @@ erDiagram
         string role
         timestamp created_at
     }
-    
+
     USER_QUIZ {
         string id PK
         string user_id FK
@@ -74,23 +91,23 @@ erDiagram
         double score
         timestamp created_at
     }
-    
-    
+
+
     SESSION {
         string id PK
         string host_id FK
         string quiz_id FK
         timestamp created_at
     }
-    
+
     USER_SESSION {
         string user_name PK
         string session_id PK
         string solution
         timestamp created_at
     }
-    
-    
+
+
     USER ||--o{ QUIZ : "creates"
     USER ||--o{ USER_QUIZ : "solves"
     QUIZ ||--o{ USER_QUIZ : "solved by"
@@ -98,6 +115,6 @@ erDiagram
 %%    SESSION ||--o{ QUIZ : ""
     USER_QUIZ ||--o| SESSION : "part of"
     USER_SESSION ||--o{ SESSION : ""
-    
-    
+
+
 ```
