@@ -34,11 +34,13 @@ const QuizList = ({ quizzes, onQuizSelection }: QuizListProps) => {
           <Box
             w="100%"
             borderLeftRadius={12}
-            _hover={{ background: 'green.10' }}
+            _hover={{ background: 'green.10', color: 'black' }}
             sx={
               isSelected(quiz.id)
                 ? {
                     background: 'green.50 !important',
+                    color: 'black',
+                    fontWeight: '900 !important',
                     borderRight: `4px solid ${theme.colors.primary}`,
                   }
                 : {}
