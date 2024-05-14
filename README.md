@@ -116,5 +116,6 @@ erDiagram
     USER_QUIZ ||--o| SESSION : "part of"
     USER_SESSION ||--o{ SESSION : ""
 
-
 ```
+# Burndown Chart
+![image](./charts/burndown_week1.png)
