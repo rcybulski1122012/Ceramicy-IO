@@ -1,9 +1,17 @@
 export type Quiz = {
   id: string;
   name: string;
-  languages: string[];
-  codeSmells: string[];
+  languages: Language[];
+  codeSmells: CodeSmell[];
 };
+
+type Language = 'Python' | 'Javascript' | 'Ruby' | 'Elixir' | 'C++' | 'C#';
+type CodeSmell =
+  | 'Comment'
+  | 'Incorrect typing'
+  | 'Typo'
+  | 'Logic Error'
+  | 'Invocation Error';
 
 const quizzes = [
   {

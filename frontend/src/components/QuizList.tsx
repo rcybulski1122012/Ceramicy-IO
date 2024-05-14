@@ -32,6 +32,7 @@ const QuizList = ({ quizzes, onQuizSelection }: QuizListProps) => {
       <VStack alignItems={'start'} w={'100%'}>
         {quizzes.map((quiz) => (
           <Box
+            key={quiz.id}
             w="100%"
             borderLeftRadius={12}
             _hover={{ background: 'green.10', color: 'black' }}

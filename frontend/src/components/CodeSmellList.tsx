@@ -1,13 +1,5 @@
 import { Badge, Flex } from '@chakra-ui/react';
 
-// const CodeSmells = [
-//   'Comment',
-//   'Incorrect typing',
-//   'Typo',
-//   'Logic Error',
-//   'Invocation Error'
-// ];
-
 const CodeSmellColorMapping = new Map([
   ['Comment', 'red'],
   ['Comment', 'pink'],
@@ -26,6 +18,7 @@ const CodeSmellList = ({ codeSmells }: CodeSmellListProps) => {
     <Flex gap={6} wrap={'wrap'} w={'70%'}>
       {codeSmells.map((codeSmell) => (
         <Badge
+          key={codeSmell}
           p={3}
           rounded={8}
           colorScheme={CodeSmellColorMapping.get(codeSmell)}
