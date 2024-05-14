@@ -10,6 +10,7 @@ import {
 import CodeSmellList from './CodeSmellList';
 import CodeLanguageList from './CodeLanguageList';
 import { Quiz } from '../data/quizzes';
+import { Link } from 'react-router-dom';
 
 type QuizDetailsProps = {
   selectedQuiz: Quiz | null;
@@ -53,9 +54,11 @@ const QuizDetails = ({ selectedQuiz }: QuizDetailsProps) => {
             <CodeLanguageList languages={selectedQuiz.languages} />
           </VStack>
           <Divider colorScheme="blue" size="100" h="5px" />
-          <Button w="200px" bg="primary" p={7}>
-            Start Quiz
-          </Button>
+          <Link to="quiz/1">
+            <Button w="200px" bg="primary" p={7} >
+              Start Quiz
+            </Button>
+          </Link>
         </Flex>
       )}
       {!selectedQuiz && (
