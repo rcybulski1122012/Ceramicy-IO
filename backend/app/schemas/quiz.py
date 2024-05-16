@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import model_validator
 
 from app.models.quiz import Quiz
@@ -16,3 +18,18 @@ class QuizOutList(SchemaBase):
         data.files_count = len(data.file_urls)
         return data
 
+
+class QuizOut(SchemaBase):
+    id: str
+    name: str
+    author_id: str | None
+    main_language: str
+    file_urls: list[str]
+    code_smells: dict[str, Any]
+
+
+class QuizIn(SchemaBase):
+    name: str
+    main_language: str
+    file_urls: list[str]
+    code_smells: dict[str, Any]
