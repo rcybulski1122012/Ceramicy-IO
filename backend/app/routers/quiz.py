@@ -23,5 +23,4 @@ async def create_quiz(
     quiz_in: QuizIn,
 ) -> Quiz:
     quiz = await quiz_service.create_quiz(session, quiz_in.model_dump())
-    print(quiz)
     return quiz

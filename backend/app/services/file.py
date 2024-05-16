@@ -1,6 +1,7 @@
-from fastapi import UploadFile
+from fastapi import HTTPException, UploadFile, status
 
 import uuid
+from urllib.parse import quote
 
 from azure.storage.blob.aio import BlobServiceClient
 
@@ -15,10 +16,19 @@ async def upload_single_file(file: UploadFile) -> str:
         client.get_blob_client(settings.BLOB_STORAGE_CONTAINER_NAME, blob_path) as blob_client,
     ):
         file_bytes = await file.read()
+        _check_if_text_based_file(file_bytes, file.content_type)
         await blob_client.upload_blob(file_bytes)
 
-    blob_url = (
-        f"https://{settings.BLOB_ACCOUNT_NAME}.blob.core.windows.net/"
-        f"{settings.BLOB_STORAGE_CONTAINER_NAME}/{blob_path}"
-    )
-    return blob_url
+    return _get_blob_url(blob_path)
+
+
+def _check_if_text_based_file(file: bytes, mime_type: str) -> None:
+    try:
+        file.decode("utf-8")
+    except UnicodeDecodeError:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, f"File with mime type {mime_type} is not text-based")
+
+
+def _get_blob_url(blob_path: str) -> str:
+    quoted_blob_path = quote(blob_path)
+    return f"{settings.BLOB_STORAGE_URL}/{quoted_blob_path}"
