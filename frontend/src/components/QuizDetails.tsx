@@ -15,6 +15,51 @@ type QuizDetailsProps = {
   selectedQuiz: Quiz | null;
 };
 
+function Management({ isScored, score, maxScore }) {
+  if (isScored) {
+    return (
+      <Box>
+        <Box
+          display={'flex'}
+          flexDirection={'row'}
+          justifyContent={'space-between'}
+          alignItems={'flex-end'}
+          marginBottom={'1.5rem'}
+        >
+          <Text fontSize={'x-large'} fontWeight={'bold'}>
+            Your Score:{' '}
+          </Text>
+          <Text
+            fontSize={'xxx-large'}
+            color={score < maxScore / 2 ? 'red.50' : 'green.300'}
+            fontWeight={'bold'}
+          >
+            {score} / {maxScore}{' '}
+          </Text>
+        </Box>
+        <Box
+          display={'flex'}
+          flexDirection={'row'}
+          justifyContent={'space-between'}
+        >
+          <Button w="200px" bg="primary" p={7}>
+            Try again
+          </Button>
+          <Button w="200px" bg="primary" p={7}>
+            View Results
+          </Button>
+        </Box>
+      </Box>
+    );
+  } else {
+    return (
+      <Button w="200px" bg="primary" p={7}>
+        Start Quiz
+      </Button>
+    );
+  }
+}
+
 const QuizDetails = ({ selectedQuiz }: QuizDetailsProps) => {
   return (
     <Center w="100%" h="100%">
@@ -53,9 +98,7 @@ const QuizDetails = ({ selectedQuiz }: QuizDetailsProps) => {
             <CodeLanguageList languages={selectedQuiz.languages} />
           </VStack>
           <Divider colorScheme="blue" size="100" h="5px" />
-          <Button w="200px" bg="primary" p={7}>
-            Start Quiz
-          </Button>
+          <Management isScored={true} score={5} maxScore={selectedQuiz.codeSmells.length}></Management>
         </Flex>
       )}
       {!selectedQuiz && (
