@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Any
 
 
 class Smell(BaseModel):
@@ -29,4 +29,5 @@ class QuizCheckOut(BaseModel):
 
     quiz_id: int
     score: int  # possible change to List[float] for more detailed scoring 
-    details: List[str]
+    not_found_smells: dict[str, List[Any]]
+    incorrect_smells: dict[str, List[Any]]
