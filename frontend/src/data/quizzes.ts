@@ -5,6 +5,7 @@ export type Quiz = {
   files?: File[];
   languages: Language[];
   codeSmells: CodeSmell[];
+  time: number; // in seconds
 };
 
 export type File = {
@@ -18,7 +19,7 @@ export type Smell = {
   start: number;
   end: number;
   type: string;
-}
+};
 
 type Language = 'Python' | 'Javascript' | 'Ruby' | 'Elixir' | 'C++' | 'C#';
 type CodeSmell =
@@ -34,12 +35,14 @@ const quizzes = [
     name: 'Quiz 1',
     languages: ['Python', 'Javascript'],
     codeSmells: ['Comment', 'Incorrect typing'],
+    time: 10,
   },
   {
     id: '2',
     name: 'Quiz 2',
     languages: ['Ruby', 'Elixir'],
     codeSmells: ['Typo', 'Logic Error'],
+    time: 300,
   },
   {
     id: '3',

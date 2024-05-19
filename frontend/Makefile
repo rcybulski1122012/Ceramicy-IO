@@ -34,6 +34,7 @@ shell:	## Run project with docker-compose up - start local server
 down: ## Stop project with docker-compose and remove containers and networks
 	docker-compose down --remove-orphans | true
 
+# Linux equivalents
 .PHONY: linux-build
 linux-build:
 	make linux-down
@@ -55,4 +56,3 @@ linux-shell:
 .PHONY: linux-down
 linux-down:
 	sudo docker compose down --remove-orphans | true
-
