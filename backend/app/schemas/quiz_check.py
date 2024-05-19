@@ -28,5 +28,5 @@ class QuizCheckOut(BaseModel):
     """A class to represent the results of a quiz check"""
 
     quiz_id: int
-    score: int  # possible change to List[float] for more detailed results
-    details: str
+    score: int  # possible change to List[float] for more detailed scoring 
+    details: List[str]
