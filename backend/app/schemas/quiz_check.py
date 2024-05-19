@@ -1,5 +1,4 @@
-from pydantic import BaseModel
-from typing import List, Any
+from pydantic import BaseModel, HttpUrl
 
 
 class Smell(BaseModel):
@@ -13,21 +12,21 @@ class Smell(BaseModel):
 class File(BaseModel):
     """A class to represent a file and its code smells"""
 
-    file_url: str
-    smells: List[Smell]
+    file_url: HttpUrl
+    smells: list[Smell]
 
 
 class QuizCheckIn(BaseModel):
     """A class to represent a quiz and smells in it's files"""
 
-    quiz_id: int
-    files: List[File]
+    quiz_id: str
+    files: list[File]
 
 
 class QuizCheckOut(BaseModel):
     """A class to represent the results of a quiz check"""
 
-    quiz_id: int
+    quiz_id: str
     score: int  # possible change to List[float] for more detailed scoring 
-    not_found_smells: dict[str, List[Any]]
-    incorrect_smells: dict[str, List[Any]]
+    not_found_smells: dict[str, list[Smell]]
+    incorrect_smells: dict[str, list[Smell]]
