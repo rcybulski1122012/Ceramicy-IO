@@ -30,4 +30,5 @@ class QuizCheckOut(BaseModel):
     score: int  # possible change to List[float] for more detailed scoring 
     not_found_smells: dict[str, list[Smell]]
     incorrect_smells: dict[str, list[Smell]]
+    correct_smells: dict[str, list[Smell]]
     
