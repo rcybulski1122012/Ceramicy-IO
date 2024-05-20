@@ -1,8 +1,10 @@
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
 
+APP_ROOT_PATH = Path(__file__).parent
 
 class Settings(BaseSettings):
     POSTGRES_URL: PostgresDsn
@@ -12,7 +14,11 @@ class Settings(BaseSettings):
 
     class Config:
         extra = "allow"
-        env_file = "./.env"
+        env_file = APP_ROOT_PATH.parent / ".env"
+
+    @property
+    def BLOB_STORAGE_URL(self) -> str:
+        return f"https://{self.BLOB_ACCOUNT_NAME}.blob.core.windows.net/{self.BLOB_STORAGE_CONTAINER_NAME}"
 
     @property
     def BLOB_STORAGE_URL(self) -> str:

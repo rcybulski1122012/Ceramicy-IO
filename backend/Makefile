@@ -13,32 +13,32 @@ help: ## Show this help (usage: make help)
 
 
 .PHONY: build
-build:	## Build project with docker-compose
-	docker-compose up --build
+build:	## Build project with docker compose
+	docker compose up --build
 
 .PHONY: up
-up:	## Run project with docker-compose
-	docker-compose up
+up:	## Run project with docker compose
+	docker compose up
 
 .PHONY: down
-down: ## Stop project with docker-compose and remove containers and networks
-	docker-compose down --remove-orphans | true
+down: ## Stop project with docker compose and remove containers and networks
+	docker compose down --remove-orphans | true
 
 
 .PHONY: autogenerate
 autogenerate:  ## Generate migration file (usage: make autogenerate msg="migration message")
-	docker-compose up -d | true
-	docker-compose exec app alembic revision --autogenerate -m "$(msg)"
+	docker compose up -d | true
+	docker compose exec app alembic revision --autogenerate -m "$(msg)"
 
 .PHONY: downgrade
 downgrade:  ## Downgrade by 1 revision
-	docker-compose up -d | true
-	docker-compose exec app alembic downgrade -1
+	docker compose up -d | true
+	docker compose exec app alembic downgrade -1
 
 .PHONY: downgrade_to
 downgrade_to:  ## Downgrade to the specific revision (usage: make downgrade_to revision="revision")
-	docker-compose up -d | true
-	docker-compose exec app alembic downgrade "$(revision)"
+	docker compose up -d | true
+	docker compose exec app alembic downgrade "$(revision)"
 
 drop_db:
-	docker-compose exec -T db psql -h localhost -p 5432 -U $$POSTGRES_USER -d $$POSTGRES_DB -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+	docker compose exec -T db psql -h localhost -p 5432 -U $$POSTGRES_USER -d $$POSTGRES_DB -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
