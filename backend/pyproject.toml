@@ -16,6 +16,9 @@ asyncpg = "^0.28.0"
 pyjwt = {extras = ["crypto"], version = "^2.8.0"}
 requests = "^2.31.0"
 gunicorn = "^22.0.0"
+azure-storage-blob = "^12.20.0"
+aiohttp = "^3.9.5"
+python-multipart = "^0.0.9"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.12.0"
@@ -41,7 +44,7 @@ exclude-extend = '''
 [tool.ruff]
 line-length = 120
 select = ["E", "F", "UP", "I"]
-ignore = ["E501", "UP007"]
+ignore = ["E501", "UP007", "UP035"]
 fixable = ["A", "B", "C", "D", "E", "F", "I"]
 exclude = [
     ".direnv",

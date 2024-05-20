@@ -8,10 +8,17 @@ APP_ROOT_PATH = Path(__file__).parent
 
 class Settings(BaseSettings):
     POSTGRES_URL: PostgresDsn
+    BLOB_STORAGE_CONNECTION_STRING: str
+    BLOB_STORAGE_CONTAINER_NAME: str
+    BLOB_ACCOUNT_NAME: str
 
     class Config:
         extra = "allow"
         env_file = APP_ROOT_PATH.parent / ".env"
+
+    @property
+    def BLOB_STORAGE_URL(self) -> str:
+        return f"https://{self.BLOB_ACCOUNT_NAME}.blob.core.windows.net/{self.BLOB_STORAGE_CONTAINER_NAME}"
 
 
 @lru_cache
