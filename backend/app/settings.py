@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     def BLOB_STORAGE_URL(self) -> str:
         return f"https://{self.BLOB_ACCOUNT_NAME}.blob.core.windows.net/{self.BLOB_STORAGE_CONTAINER_NAME}"
 
+    @property
+    def BLOB_STORAGE_URL(self) -> str:
+        return f"https://{self.BLOB_ACCOUNT_NAME}.blob.core.windows.net/{self.BLOB_STORAGE_CONTAINER_NAME}"
+
 
 @lru_cache
 def get_settings():

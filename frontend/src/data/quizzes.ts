@@ -1,9 +1,29 @@
 export type Quiz = {
   id: string;
   name: string;
+  description?: string;
+  files?: File[];
   languages: Language[];
   codeSmells: CodeSmell[];
 };
+
+export type File = {
+  id: string;
+  name: string;
+  content: string;
+  // TODO add smells
+};
+
+export type Smell = {
+  start: number;
+  end: number;
+  type: string;
+}
+
+export type SmellType = {
+  type: string;
+  color: string;
+}
 
 type Language = 'Python' | 'Javascript' | 'Ruby' | 'Elixir' | 'C++' | 'C#';
 type CodeSmell =
