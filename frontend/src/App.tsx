@@ -2,6 +2,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import theme from './theme/theme';
 import { RouterProvider, createHashRouter } from 'react-router-dom';
 import MainPage from './components/pages/MainPage';
+import QuizPage from './components/pages/quiz/QuizPage';
 
 const router = createHashRouter([
   {
@@ -10,7 +11,7 @@ const router = createHashRouter([
   },
   {
     path: '/quiz/:quizId',
-    element: <div>Quiz!</div>,
+    element: <QuizPage></QuizPage>,
   },
 ]);
 
