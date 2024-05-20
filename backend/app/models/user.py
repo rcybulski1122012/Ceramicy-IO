@@ -1,5 +1,9 @@
-from enum import StrEnum
+from enum import Enum
 
+class StrEnum(str, Enum):
+    def __str__(self):
+        return str(self.value)
+    
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column
 

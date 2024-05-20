@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Smell } from '../../../data/quizzes';
+import React, { useState, useEffect } from 'react';
+import { Smell, SmellType } from '../../../data/quizzes';
 import {
   Popover,
   PopoverTrigger,
@@ -13,58 +13,145 @@ import {
   Stack,
   Tooltip,
 } from '@chakra-ui/react';
+import { LineRange } from './LineRange';
 
 interface SmellButtonProps {
   id: number;
-  line: number;
+  col: number;
   smellLines: Smell[][];
-  end: number | null;
-  handleClick: () => void;
-  isPopoverOpen: boolean;
-  handlePopoverClose: (type: string, line: number) => void;
+  setSmellLines: React.Dispatch<React.SetStateAction<Smell[][]>>;
+  lineRange: LineRange;
+  smellTypes: SmellType[];
 }
 
 const SmellButton: React.FC<SmellButtonProps> = ({
   id,
-  line,
+  col,
   smellLines,
-  end,
-  handleClick,
-  isPopoverOpen,
-  handlePopoverClose,
+  setSmellLines,
+  lineRange,
+  smellTypes,
 }) => {
-  const isLineBreakpoint = smellLines[line]?.some(
+  const { start, end, setStart, setEnd, reset, col: selectedCol } = lineRange;
+
+  const isLineBreakpoint = smellLines[col]?.some(
     (smell) => id >= smell.start && id <= smell.end,
   );
-  const type = smellLines[line]?.find(
+
+  const showTopLine = smellLines[col]?.some(
+    (smell) => id >= smell.start + 1 && id <= smell.end + 1,
+  );
+
+  const showBottomLine = smellLines[col]?.some(
+    (smell) => id >= smell.start && id <= smell.end - 1,
+  );
+
+  const type = smellLines[col]?.find(
     (smell) => id >= smell.start && id <= smell.end,
   )?.type;
-  const buttonStyle = {
+
+  const getSmellColor = () => {
+    const smellType = smellTypes.find((st) => st.type === type);
+    return smellType ? smellType.color : '#6b7280'; // Default color if type is not found
+  };
+
+  const buttonStyle: React.CSSProperties = {
+    position: 'relative',
     width: '10px',
     height: '10px',
     borderRadius: '50%',
-    backgroundColor: isLineBreakpoint ? '#6b7280' : 'transparent',
-    border: isLineBreakpoint ? '2px solid #6b7280' : '2px solid transparent',
+    backgroundColor: isLineBreakpoint ? getSmellColor() : 'transparent',
+    border: isLineBreakpoint
+      ? '2px solid' + getSmellColor()
+      : '2px solid transparent',
     cursor: 'pointer',
     marginRight: '8px',
     marginLeft: '8px',
-    // marginTop: isTop ? '0' : '4px',
-    // marginBottom: isBottom ? '0' : '4px',
   };
 
-  const [selectedValue, setSelectedValue] = useState('Unnecesary Comment');
+  const bottomLineStyle: React.CSSProperties = {
+    position: 'absolute',
+    width: '10px',
+    height: '15px',
+    backgroundColor:
+      showBottomLine && isLineBreakpoint ? getSmellColor() : 'transparent',
+    border:
+      showBottomLine && isLineBreakpoint
+        ? '2px solid' + getSmellColor()
+        : '2px solid transparent',
+    cursor: 'pointer',
+    left: '-2px',
+    top: '2px',
+  };
+
+  const topLineStyle: React.CSSProperties = {
+    position: 'absolute',
+    width: '10px',
+    height: '15px',
+    backgroundColor:
+      showTopLine && isLineBreakpoint ? getSmellColor() : 'transparent',
+    border:
+      showTopLine && isLineBreakpoint
+        ? '2px solid' + getSmellColor()
+        : '2px solid transparent',
+    cursor: 'pointer',
+    left: '-2px',
+    top: '-12px',
+  };
+
+  const [selectedValue, setSelectedValue] = useState(smellTypes[0].type);
+  const [localPopoverOpen, setLocalPopoverOpen] = useState(false);
+
+  useEffect(() => {
+    if (start !== null && end === id && selectedCol === col) {
+      setLocalPopoverOpen(true);
+    }
+  }, [start, end, id, col, selectedCol]);
+
+  const handleClick = () => {
+    if (start === null) {
+      if (
+        smellLines[col]?.some((smell) => id >= smell.start && id <= smell.end)
+      ) {
+        const updated = smellLines.slice();
+        updated[col] =
+          updated[col]?.filter(
+            (smell) => !(smell.start <= id && smell.end >= id),
+          ) || [];
+        setSmellLines(updated);
+      } else {
+        setStart(id, col);
+        lineRange.col = col;
+      }
+    } else if (end === null) {
+      setEnd(id);
+    }
+  };
+
+  const handlePopoverClose = (type: string, col: number) => {
+    setLocalPopoverOpen(false);
+
+    const updated = smellLines.slice();
+    if (!updated[col]) {
+      updated[col] = [];
+    }
+    updated[col].push({ start: start!, end: end!, type: type });
+
+    setSmellLines(updated);
+    reset();
+  };
+
+  const handlePopoverCloseWithSelectedValue = () => {
+    handlePopoverClose(selectedValue, col);
+  };
 
   const handleRadioChange = (value: string) => {
     setSelectedValue(value);
   };
 
-  const handlePopoverCloseWithSelectedValue = () => {
-    handlePopoverClose(selectedValue, line);
-  };
-
   return (
     <Popover
-      isOpen={isPopoverOpen && end === id}
+      isOpen={localPopoverOpen}
       onClose={handlePopoverCloseWithSelectedValue}
     >
       <PopoverTrigger>
@@ -72,8 +159,15 @@ const SmellButton: React.FC<SmellButtonProps> = ({
           style={{ width: '100%', height: '15px', display: 'flex' }}
           onClick={handleClick}
         >
-          <Tooltip label={type} aria-label="A tooltip" isDisabled={!isLineBreakpoint}>
-            <div style={buttonStyle}></div>
+          <Tooltip
+            label={type}
+            aria-label="A tooltip"
+            isDisabled={!isLineBreakpoint}
+          >
+            <div style={buttonStyle}>
+              <div style={topLineStyle}></div>
+              <div style={bottomLineStyle}></div>
+            </div>
           </Tooltip>
         </div>
       </PopoverTrigger>
@@ -87,12 +181,15 @@ const SmellButton: React.FC<SmellButtonProps> = ({
             onChange={(e) => handleRadioChange(e)}
           >
             <Stack spacing={5} direction="column">
-              <Radio colorScheme="red" value="Unnecesary Comment">
-                Unnecesary Comment
-              </Radio>
-              <Radio colorScheme="green" value="Incorrect Typing">
-                Incorrect Typing
-              </Radio>
+              {smellTypes.map((smellType) => (
+                <Radio
+                  key={smellType.type}
+                  colorScheme={smellType.color}
+                  value={smellType.type}
+                >
+                  {smellType.type}
+                </Radio>
+              ))}
             </Stack>
           </RadioGroup>
         </PopoverBody>
