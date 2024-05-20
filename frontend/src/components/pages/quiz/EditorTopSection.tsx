@@ -1,7 +1,6 @@
 import React from 'react';
-import {Button, HStack, Text } from '@chakra-ui/react';
+import { Button, HStack, Text } from '@chakra-ui/react';
 
-// Assuming you will create a Timer component
 const Timer = () => {
   // Placeholder Timer component
   return <Text fontSize={'xl'}>00:00:00</Text>;

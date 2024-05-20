@@ -37,11 +37,11 @@ const SmellButton: React.FC<SmellButtonProps> = ({
   );
 
   const showTopLine = smellLines[col]?.some(
-    (smell) => id >= smell.start+1 && id <= smell.end+1,
+    (smell) => id >= smell.start + 1 && id <= smell.end + 1,
   );
 
   const showBottomLine = smellLines[col]?.some(
-    (smell) => id >= smell.start && id <= smell.end-1,
+    (smell) => id >= smell.start && id <= smell.end - 1,
   );
 
   const type = smellLines[col]?.find(
@@ -64,10 +64,13 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     position: 'absolute',
     width: '10px',
     height: '15px',
-    backgroundColor: showBottomLine && isLineBreakpoint ? '#6b7280' : 'transparent',
-    border: showBottomLine && isLineBreakpoint ? '2px solid #6b7280' : '2px solid transparent',
+    backgroundColor:
+      showBottomLine && isLineBreakpoint ? '#6b7280' : 'transparent',
+    border:
+      showBottomLine && isLineBreakpoint
+        ? '2px solid #6b7280'
+        : '2px solid transparent',
     cursor: 'pointer',
-    // marginRight: '8px',
     left: '-2px',
     top: '2px',
   };
@@ -76,8 +79,12 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     position: 'absolute',
     width: '10px',
     height: '15px',
-    backgroundColor: showTopLine && isLineBreakpoint ? '#6b7280' : 'transparent',
-    border: showTopLine && isLineBreakpoint ? '2px solid #6b7280' : '2px solid transparent',
+    backgroundColor:
+      showTopLine && isLineBreakpoint ? '#6b7280' : 'transparent',
+    border:
+      showTopLine && isLineBreakpoint
+        ? '2px solid #6b7280'
+        : '2px solid transparent',
     cursor: 'pointer',
     left: '-2px',
     top: '-12px',
@@ -94,13 +101,18 @@ const SmellButton: React.FC<SmellButtonProps> = ({
 
   const handleClick = () => {
     if (start === null) {
-      if (smellLines[col]?.some(smell => id >= smell.start && id <= smell.end)) {
+      if (
+        smellLines[col]?.some((smell) => id >= smell.start && id <= smell.end)
+      ) {
         const updated = smellLines.slice();
-        updated[col] = updated[col]?.filter(smell => !(smell.start <= id && smell.end >= id)) || [];
+        updated[col] =
+          updated[col]?.filter(
+            (smell) => !(smell.start <= id && smell.end >= id),
+          ) || [];
         setSmellLines(updated);
       } else {
         setStart(id, col);
-        lineRange.col = col;  // Update the selected column
+        lineRange.col = col;
       }
     } else if (end === null) {
       setEnd(id);
@@ -138,7 +150,11 @@ const SmellButton: React.FC<SmellButtonProps> = ({
           style={{ width: '100%', height: '15px', display: 'flex' }}
           onClick={handleClick}
         >
-          <Tooltip label={type} aria-label="A tooltip" isDisabled={!isLineBreakpoint}>
+          <Tooltip
+            label={type}
+            aria-label="A tooltip"
+            isDisabled={!isLineBreakpoint}
+          >
             <div style={buttonStyle}>
               <div style={topLineStyle}></div>
               <div style={bottomLineStyle}></div>

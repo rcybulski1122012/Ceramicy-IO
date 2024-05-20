@@ -14,17 +14,24 @@ const Editor = () => {
   );
   const lineRange = useLineRange();
 
-  const [correctColor, wrongColor] = ['rgba(16, 185, 129, 0.15)', 'rgba(185, 16, 50, 0.15)']
+  const [correctColor, wrongColor] = [
+    'rgba(16, 185, 129, 0.15)',
+    'rgba(185, 16, 50, 0.15)',
+  ];
   const [correctLines, setCorrectLines] = useState<number[][]>([[4, 6]]);
   const [wrongLines, setWrongLines] = useState<number[][]>([[21, 26]]);
 
   const isCorrect = (lineNumber: number) => {
-    return correctLines.some(([start, end]) => lineNumber >= start && lineNumber <= end)
-  }
+    return correctLines.some(
+      ([start, end]) => lineNumber >= start && lineNumber <= end,
+    );
+  };
 
   const isWrong = (lineNumber: number) => {
-    return wrongLines.some(([start, end]) => lineNumber >= start && lineNumber <= end)
-  }
+    return wrongLines.some(
+      ([start, end]) => lineNumber >= start && lineNumber <= end,
+    );
+  };
 
   const handleSubmit = () => {
     console.log(smellLines.reduce((acc, val) => acc.concat(val), []));
@@ -63,7 +70,9 @@ const Editor = () => {
                   alignItems: 'center',
                   backgroundColor: isCorrect(lineNumber)
                     ? correctColor
-                    : (isWrong(lineNumber) ? wrongColor :'transparent'),
+                    : isWrong(lineNumber)
+                      ? wrongColor
+                      : 'transparent',
                 }}
               >
                 <div
