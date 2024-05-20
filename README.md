@@ -51,13 +51,21 @@ make shell
 make task
 ```
 
+## Points scoring system:
+
+- base point value is the amount of code smells
+- for every missing smell -> -1 point.
+- for every 'extra'(not correct) smell -> -1 point.
+- no negative points
+
+
 ## Definition of done
 
-- Przed zmergowaniem co najmniej jedna osoba musi ocenić
-- W zależności od priorytetu zadania zmienna ilość osób uczestniczących w ocenie - brak ścisłych kryteriów.
-- Po każdym pull requeście dodatkowa informacja o jego wykonaniu - w razie braku oceny po upływie dnia, ponowna wiadomość do zespołu.
-- Pull request musi przechodzić testy
-- Pull request musi być zmergowany
+- At least one person must review before merging
+- Depending on the priority of the task, the number of people involved in the review varies - no strict criteria.
+- After each pull request, additional information to the rest of the team about its completion - if there is no review after a day, another message should be sent to the team.
+- Pull requests must be tested
+- Pull request needs to be merged
 
 ## Database schema
 
