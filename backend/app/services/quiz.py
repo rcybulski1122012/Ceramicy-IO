@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 
 from app.models.quiz import Quiz
+import logging
 
 
 async def get_quizzes(session: AsyncSession) -> Sequence[Quiz]:
@@ -15,6 +16,8 @@ async def get_quizzes(session: AsyncSession) -> Sequence[Quiz]:
 async def get_quiz_by_id(session: AsyncSession, quiz_id: str) -> Quiz:
     statement = select(Quiz).filter(Quiz.id == quiz_id)
     result = await session.execute(statement)
-    if result is None:
+    quiz = await result.scalar_one_or_none()  # Await the result here
+    if quiz is None:
         raise HTTPException(status_code=404, detail="Quiz not found")
-    return result.scalars().first()
+    return quiz
+

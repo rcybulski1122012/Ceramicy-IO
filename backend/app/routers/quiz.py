@@ -7,8 +7,8 @@ from app.db import get_session
 from app.models.quiz import Quiz
 from app.schemas.quiz import QuizOutList
 from app.services import quiz as quiz_service
-from backend.app.schemas.quiz_check import QuizCheckIn, QuizCheckOut
-from backend.app.services import quiz_check as file_check_service
+from app.schemas.quiz_check import QuizCheckIn, QuizCheckOut
+from app.services import quiz_check as file_check_service
 
 router = APIRouter(tags=["Quiz"], prefix="/quiz")
 
