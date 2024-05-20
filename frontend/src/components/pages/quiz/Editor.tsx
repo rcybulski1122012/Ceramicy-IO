@@ -14,8 +14,21 @@ const Editor = () => {
   );
   const lineRange = useLineRange();
 
+  const [correctColor, wrongColor] = ['rgba(16, 185, 129, 0.15)', 'rgba(185, 16, 50, 0.15)']
+  const [correctLines, setCorrectLines] = useState<number[][]>([[4, 6]]);
+  const [wrongLines, setWrongLines] = useState<number[][]>([[21, 26]]);
+
+  const isCorrect = (lineNumber: number) => {
+    return correctLines.some(([start, end]) => lineNumber >= start && lineNumber <= end)
+  }
+
+  const isWrong = (lineNumber: number) => {
+    return wrongLines.some(([start, end]) => lineNumber >= start && lineNumber <= end)
+  }
+
   const handleSubmit = () => {
     console.log(smellLines.reduce((acc, val) => acc.concat(val), []));
+    // sending request with smellLines and then updating correctLines and wrongLines
   };
 
   return (
@@ -25,7 +38,7 @@ const Editor = () => {
         y={10}
         handleSubmit={handleSubmit}
       ></EditorTopSection>
-      <CodeBlock code={code} language={language} lines={['4:6']}>
+      <CodeBlock code={code} language={language} lines={['4:6', '21:45']}>
         <div
           style={{
             position: 'relative',
@@ -43,14 +56,14 @@ const Editor = () => {
             {filename}
           </div>
           <CodeBlock.Code style={{ padding: '0', overflow: 'scroll' }}>
-            {({ isLineHighlighted, lineNumber }) => (
+            {({ lineNumber }) => (
               <div
                 style={{
                   display: 'table-row',
                   alignItems: 'center',
-                  backgroundColor: isLineHighlighted
-                    ? 'rgba(16, 185, 129, 0.15)'
-                    : 'transparent',
+                  backgroundColor: isCorrect(lineNumber)
+                    ? correctColor
+                    : (isWrong(lineNumber) ? wrongColor :'transparent'),
                 }}
               >
                 <div
