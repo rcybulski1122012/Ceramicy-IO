@@ -96,18 +96,9 @@ const Editor = () => {
     return value;
 }`;
 
-  const [smellLines, setSmellLines] = useState<Smell[][]>([[]]);
-  const { start, end, setStart, setEnd, reset } = useLineRange();
+  const [smellLines, setSmellLines] = useState<Smell[][]>([]);
+  const lineRange = useLineRange();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-
-  const handlePopoverClose = (type: string, line: number) => {
-    setIsPopoverOpen(false);
-    console.log(start, end, type, line);
-    const updated = { ...smellLines };
-    updated[line].push({ start: start!, end: end!, type: type });
-    setSmellLines(updated);
-    reset();
-  };
 
   return (
     <CodeBlock code={code} language={language} lines={['4:6']}>
@@ -127,47 +118,35 @@ const Editor = () => {
         >
           {filename}
         </div>
+        {/* {console.log('SmellLines:', smellLines)} */}
         <CodeBlock.Code style={{ padding: '0', overflow: 'scroll' }}>
           {({ isLineHighlighted, lineNumber }) => (
             <div
               style={{
                 display: 'table-row',
+                alignItems: 'center',
                 backgroundColor: isLineHighlighted
                   ? 'rgba(16, 185, 129, 0.15)'
                   : 'transparent',
               }}
             >
-              <SmellButton
-                id={lineNumber}
-                line={0}
-                smellLines={smellLines}
-                isPopoverOpen={isPopoverOpen}
-                end={end}
-                handlePopoverClose={handlePopoverClose}
-                handleClick={() => {
-                  if (start === null) {
-                    console.log('start', lineNumber);
-                    if (
-                      smellLines[0]?.some(
-                        (smell) =>
-                          lineNumber >= smell.start && lineNumber <= smell.end,
-                      )
-                    ) {
-                      console.log('remove');
-                      const updated = { ...smellLines };
-                      updated[0] = updated[0].filter(
-                        (smell) => !(smell.start <= lineNumber && smell.end >= lineNumber),
-                      );
-                      setSmellLines(updated);
-                    }
-                    else setStart(lineNumber);
-                  } else if (end === null) {
-                    console.log('end', lineNumber);
-                    setEnd(lineNumber);
-                    setIsPopoverOpen(true);
-                  }
-                }}
-              ></SmellButton>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'row'
+              }}>
+                {Array.from({ length: smellLines.length + 1 })
+                .map((_, idx) => smellLines.length - idx)
+                .map((idx) => (
+                  <SmellButton
+                    key={`${lineNumber}-${idx}`}
+                    id={lineNumber}
+                    col={idx}
+                    smellLines={smellLines}
+                    setSmellLines={setSmellLines}
+                    lineRange={lineRange}
+                  />
+                ))}
+              </div>
               <CodeBlock.LineNumber
                 style={{
                   display: 'table-cell',
