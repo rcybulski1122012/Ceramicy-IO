@@ -4,33 +4,34 @@ import { useEffect, useState } from 'react';
 import useLineRange from './LineRange';
 import { Smell } from '../../../data/quizzes';
 import EditorTopSection from './EditorTopSection';
-import { code, filename, language, smellTypes } from './data';
+import { code, fileUrl, filename, language, quizId, smellTypes } from './data';
+import { mapResponseToState, toQuizCheckObject } from './utils';
 
 const Editor = () => {
-  useEffect(() => {
-    const fetchQuizzes = async () => {
-      try {
-        const response = await fetch('http://0.0.0.0:8000/api/v1/quiz', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+  // useEffect(() => {
+  //   const fetchQuizzes = async () => {
+  //     try {
+  //       const response = await fetch('http://0.0.0.0:8000/api/v1/quiz', {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //       });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok.');
-        }
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok.');
+  //       }
 
-        const data = await response.json();
-        console.log('Quizzes:', data);
-      } catch (error) {
-        console.error('Error fetching quizzes:', error);
-        // Handle error as needed
-      }
-    };
+  //       const data = await response.json();
+  //       console.log('Quizzes:', data);
+  //     } catch (error) {
+  //       console.error('Error fetching quizzes:', error);
+  //       // Handle error as needed
+  //     }
+  //   };
 
-    fetchQuizzes();
-  }, []);
+  //   fetchQuizzes();
+  // }, []);
 
   const [smellLines, setSmellLines] = useState<Smell[][]>([]);
   let smellCount: number = smellLines.reduce(
@@ -43,8 +44,8 @@ const Editor = () => {
     'rgba(16, 185, 129, 0.15)',
     'rgba(185, 16, 50, 0.15)',
   ];
-  const [correctLines, setCorrectLines] = useState<number[][]>([[4, 6]]);
-  const [wrongLines, setWrongLines] = useState<number[][]>([[21, 26]]);
+  const [correctLines, setCorrectLines] = useState<number[][]>([]);
+  const [wrongLines, setWrongLines] = useState<number[][]>([]);
 
   const isCorrect = (lineNumber: number) => {
     return correctLines.some(
@@ -59,15 +60,49 @@ const Editor = () => {
   };
 
   const handleSubmit = () => {
-    console.log(smellLines.reduce((acc, val) => acc.concat(val), []));
-    // sending request with smellLines and then updating correctLines and wrongLines
+    const checkQuiz = async () => {
+      try {
+        const body = JSON.stringify(
+          toQuizCheckObject(
+            quizId,
+            fileUrl,
+            smellLines.reduce((acc, val) => acc.concat(val)),
+          ),
+        );
+        console.log('Body:', body);
+        const response = await fetch(
+          'http://0.0.0.0:8000/api/v1/quiz/check/' + quizId,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: body,
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+
+        const data = await response.json();
+        const { correctLines, wrongLines } = mapResponseToState(response);
+        setCorrectLines(correctLines);
+        setWrongLines(wrongLines);
+        console.log('Checks:', data);
+      } catch (error) {
+        console.error('Error checking wuiz:', error);
+      }
+    };
+
+    checkQuiz();
   };
 
   return (
     <div>
       <EditorTopSection
         x={smellCount}
-        y={10}
+        y={4}
         handleSubmit={handleSubmit}
       ></EditorTopSection>
       <CodeBlock code={code} language={language} lines={['4:6', '21:45']}>
