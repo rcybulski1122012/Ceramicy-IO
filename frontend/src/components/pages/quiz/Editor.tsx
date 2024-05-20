@@ -4,7 +4,7 @@ import { useState } from 'react';
 import useLineRange from './LineRange';
 import { Smell } from '../../../data/quizzes';
 import EditorTopSection from './EditorTopSection';
-import { code, filename, language } from './data';
+import { code, filename, language, smellTypes } from './data';
 
 const Editor = () => {
   const [smellLines, setSmellLines] = useState<Smell[][]>([]);
@@ -91,6 +91,7 @@ const Editor = () => {
                         smellLines={smellLines}
                         setSmellLines={setSmellLines}
                         lineRange={lineRange}
+                        smellTypes={smellTypes}
                       />
                     ))}
                 </div>

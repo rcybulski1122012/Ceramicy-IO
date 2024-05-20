@@ -1,3 +1,27 @@
+import { SmellType } from '../../../data/quizzes';
+
+export const smellTypes: SmellType[] = [
+  {
+    type: 'Unnecesary Comment',
+    color: '#FFD700',
+  },
+  {
+    type: 'Incorrect typing',
+    color: '#FF4500',
+  },
+  {
+    type: 'Typo',
+    color: '#FF69B4',
+  },
+  {
+    type: 'Logic Error',
+    color: '#00BFFF',
+  },
+  {
+    type: 'Invocation Error',
+    color: '#FF6347',
+  },
+];
 export const filename: string = 'polarization.c';
 export const language: string = 'c';
 export const code: string = `

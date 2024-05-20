@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Smell } from '../../../data/quizzes';
+import { Smell, SmellType } from '../../../data/quizzes';
 import {
   Popover,
   PopoverTrigger,
@@ -21,6 +21,7 @@ interface SmellButtonProps {
   smellLines: Smell[][];
   setSmellLines: React.Dispatch<React.SetStateAction<Smell[][]>>;
   lineRange: LineRange;
+  smellTypes: SmellType[];
 }
 
 const SmellButton: React.FC<SmellButtonProps> = ({
@@ -29,6 +30,7 @@ const SmellButton: React.FC<SmellButtonProps> = ({
   smellLines,
   setSmellLines,
   lineRange,
+  smellTypes,
 }) => {
   const { start, end, setStart, setEnd, reset, col: selectedCol } = lineRange;
 
@@ -48,13 +50,20 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     (smell) => id >= smell.start && id <= smell.end,
   )?.type;
 
+  const getSmellColor = () => {
+    const smellType = smellTypes.find((st) => st.type === type);
+    return smellType ? smellType.color : '#6b7280'; // Default color if type is not found
+  };
+
   const buttonStyle: React.CSSProperties = {
     position: 'relative',
     width: '10px',
     height: '10px',
     borderRadius: '50%',
-    backgroundColor: isLineBreakpoint ? '#6b7280' : 'transparent',
-    border: isLineBreakpoint ? '2px solid #6b7280' : '2px solid transparent',
+    backgroundColor: isLineBreakpoint ? getSmellColor() : 'transparent',
+    border: isLineBreakpoint
+      ? '2px solid' + getSmellColor()
+      : '2px solid transparent',
     cursor: 'pointer',
     marginRight: '8px',
     marginLeft: '8px',
@@ -65,10 +74,10 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     width: '10px',
     height: '15px',
     backgroundColor:
-      showBottomLine && isLineBreakpoint ? '#6b7280' : 'transparent',
+      showBottomLine && isLineBreakpoint ? getSmellColor() : 'transparent',
     border:
       showBottomLine && isLineBreakpoint
-        ? '2px solid #6b7280'
+        ? '2px solid' + getSmellColor()
         : '2px solid transparent',
     cursor: 'pointer',
     left: '-2px',
@@ -80,17 +89,17 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     width: '10px',
     height: '15px',
     backgroundColor:
-      showTopLine && isLineBreakpoint ? '#6b7280' : 'transparent',
+      showTopLine && isLineBreakpoint ? getSmellColor() : 'transparent',
     border:
       showTopLine && isLineBreakpoint
-        ? '2px solid #6b7280'
+        ? '2px solid' + getSmellColor()
         : '2px solid transparent',
     cursor: 'pointer',
     left: '-2px',
     top: '-12px',
   };
 
-  const [selectedValue, setSelectedValue] = useState('Unnecessary Comment');
+  const [selectedValue, setSelectedValue] = useState(smellTypes[0].type);
   const [localPopoverOpen, setLocalPopoverOpen] = useState(false);
 
   useEffect(() => {
@@ -172,12 +181,15 @@ const SmellButton: React.FC<SmellButtonProps> = ({
             onChange={(e) => handleRadioChange(e)}
           >
             <Stack spacing={5} direction="column">
-              <Radio colorScheme="red" value="Unnecessary Comment">
-                Unnecessary Comment
-              </Radio>
-              <Radio colorScheme="green" value="Incorrect Typing">
-                Incorrect Typing
-              </Radio>
+              {smellTypes.map((smellType) => (
+                <Radio
+                  key={smellType.type}
+                  colorScheme={smellType.color}
+                  value={smellType.type}
+                >
+                  {smellType.type}
+                </Radio>
+              ))}
             </Stack>
           </RadioGroup>
         </PopoverBody>
