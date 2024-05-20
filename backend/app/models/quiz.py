@@ -2,10 +2,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from app.models.base import Base
-
-# if TYPE_CHECKING:
 from app.models.session import Session
 from app.models.user import User
 
