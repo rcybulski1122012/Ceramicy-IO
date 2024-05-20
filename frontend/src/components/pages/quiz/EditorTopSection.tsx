@@ -1,10 +1,6 @@
 import React from 'react';
 import { Button, HStack, Text } from '@chakra-ui/react';
-
-const Timer = () => {
-  // Placeholder Timer component
-  return <Text fontSize={'xl'}>00:00:00</Text>;
-};
+import Timer from './Timer';
 
 interface EditorTopSectionProps {
   x: number;
@@ -24,7 +20,7 @@ const EditorTopSection: React.FC<EditorTopSectionProps> = ({
       width={'100%'}
       justifyContent={'space-between'}
     >
-      <Timer />
+      <Timer handleSubmit={handleSubmit}/>
       <HStack>
         <Text fontSize="xl">
           {x}/{y}
