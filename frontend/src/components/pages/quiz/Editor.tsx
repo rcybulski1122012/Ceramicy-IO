@@ -1,12 +1,37 @@
 import { CodeBlock } from 'react-code-block';
 import SmellButton from './SmellButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useLineRange from './LineRange';
 import { Smell } from '../../../data/quizzes';
 import EditorTopSection from './EditorTopSection';
 import { code, filename, language, smellTypes } from './data';
 
 const Editor = () => {
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      try {
+        const response = await fetch('http://0.0.0.0:8000/api/v1/quiz', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+
+        const data = await response.json();
+        console.log('Quizzes:', data);
+      } catch (error) {
+        console.error('Error fetching quizzes:', error);
+        // Handle error as needed
+      }
+    };
+
+    fetchQuizzes();
+  }, []);
+
   const [smellLines, setSmellLines] = useState<Smell[][]>([]);
   let smellCount: number = smellLines.reduce(
     (count, subArray) => count + subArray.length,
