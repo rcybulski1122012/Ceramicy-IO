@@ -16,8 +16,8 @@ class Settings(BaseSettings):
 
     class Config:
         extra = "allow"
-        if os.getenv("PYTEST_VERSION"):
-            env_file = APP_ROOT_PATH / ".test.env"
+        if os.environ.get("PYTEST"):
+            env_file = APP_ROOT_PATH.parent / ".test.env"
         else:
             env_file = APP_ROOT_PATH.parent / ".env"
 
