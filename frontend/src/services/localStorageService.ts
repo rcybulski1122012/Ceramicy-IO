@@ -1,29 +1,36 @@
-export type Answer = {
-    start : number;
-    end : number;
-    smellType : string;
-};
+import {Smell} from "./../data/quizzes.ts"
 
-export type QuizzAnswerData = {
+type QuizzAnswerData = {
     correctAnswersPercent : number | null;
-    answers: Answer[];
+    smells: Smell[][];
 };
-export const createEmptyQuizData = (): QuizzAnswerData => ({
+const createEmptyQuizData = (): QuizzAnswerData => ({
   correctAnswersPercent: null,
-  answers: [],
+  smells: [[]],
 });
-const saveAnswers = (id:string, answers:Answer[]):void =>{
+export type QuizzAnswerDataDict = {
+    [key:string]:QuizzAnswerData;
+}
+
+const saveAnswers = (id:string, url:string, smells:Smell[][]):void =>{
     try{
-        const quizAnswerDataString : string|null = localStorage.getItem(id);
-        if(quizAnswerDataString != null){
-            const quizAnswerData : QuizzAnswerData = JSON.parse(quizAnswerDataString) as QuizzAnswerData;
-            quizAnswerData.answers = answers;
-            localStorage.setItem(id,JSON.stringify(quizAnswerData));
+        const quizAnswerDataDictString : string|null = localStorage.getItem(id);
+        if(quizAnswerDataDictString != null){
+            const quizAnswerDataDict : QuizzAnswerDataDict = JSON.parse(quizAnswerDataDictString) as QuizzAnswerDataDict;
+            if(quizAnswerDataDict[url]!=null){
+                quizAnswerDataDict[url].smells=smells;
+                localStorage.setItem(id,JSON.stringify(quizAnswerDataDict));
+            }
+            const quizAnswerData : QuizzAnswerData = createEmptyQuizData();
+            quizAnswerData.smells=smells;
+            quizAnswerDataDict[url]=quizAnswerData;
+            localStorage.setItem(id,JSON.stringify(quizAnswerDataDict));
         }
         else{
             const quizAnswerData : QuizzAnswerData = createEmptyQuizData();
-            quizAnswerData.answers=answers;
-            localStorage.setItem(id,JSON.stringify(quizAnswerData));
+            quizAnswerData.smells=smells;
+            const quizAnswerDataDict : QuizzAnswerDataDict = {url:quizAnswerData}
+            localStorage.setItem(id,JSON.stringify(quizAnswerDataDict))
         }
         return;
     }
@@ -31,18 +38,25 @@ const saveAnswers = (id:string, answers:Answer[]):void =>{
         console.error("Error saving answers to localStorage ", error);
     }
 };
-const saveCorrectAnswersPercent = (id:string, percent:number):void=>{
+const saveCorrectAnswersPercent = (id:string, url:string, percent:number):void=>{
     try{
-        const quizAnswerDataString : string|null = localStorage.getItem(id);
-        if(quizAnswerDataString != null){
-            const quizAnswerData : QuizzAnswerData = JSON.parse(quizAnswerDataString) as QuizzAnswerData;
-            quizAnswerData.correctAnswersPercent = percent;
-            localStorage.setItem(id,JSON.stringify(quizAnswerData));
+        const quizAnswerDataDictString : string|null = localStorage.getItem(id);
+        if(quizAnswerDataDictString != null){
+            const quizAnswerDataDict : QuizzAnswerDataDict = JSON.parse(quizAnswerDataDictString) as QuizzAnswerDataDict;
+            if(quizAnswerDataDict[url]!=null){
+                quizAnswerDataDict[url].correctAnswersPercent=percent;
+                localStorage.setItem(id,JSON.stringify(quizAnswerDataDict));
+            }
+            const quizAnswerData : QuizzAnswerData = createEmptyQuizData();
+            quizAnswerData.correctAnswersPercent=percent;
+            quizAnswerDataDict[url]=quizAnswerData;
+            localStorage.setItem(id,JSON.stringify(quizAnswerDataDict));
         }
         else{
             const quizAnswerData : QuizzAnswerData = createEmptyQuizData();
             quizAnswerData.correctAnswersPercent=percent;
-            localStorage.setItem(id,JSON.stringify(quizAnswerData));
+            const quizAnswerDataDict : QuizzAnswerDataDict = {url:quizAnswerData}
+            localStorage.setItem(id,JSON.stringify(quizAnswerDataDict))
         }
         return;
     }
@@ -50,27 +64,37 @@ const saveCorrectAnswersPercent = (id:string, percent:number):void=>{
         console.error("Error saving answers to localStorage ", error);
     }
 };
-const getAnswers = (id:string): Answer[] | null | undefined =>{
+const getAnswers = (id:string, url:string): Smell[][] | null | undefined =>{
     try{
-        const quizAnswerDataString : string|null = localStorage.getItem(id);
-        if(quizAnswerDataString!=null){
-            const quizAnswerData : QuizzAnswerData = JSON.parse(quizAnswerDataString) as QuizzAnswerData;
-            return quizAnswerData.answers;
+        const quizAnswerDataDictString : string|null = localStorage.getItem(id);
+        if(quizAnswerDataDictString!=null){
+            const quizAnswerDataDict : QuizzAnswerDataDict = JSON.parse(quizAnswerDataDictString) as QuizzAnswerDataDict;
+            if (quizAnswerDataDict!=null){
+                if (quizAnswerDataDict[url]!=null){
+                    return quizAnswerDataDict[url].smells;
+                }
+            }
+            return undefined;
         }
-        return undefined;
+        return null;
     }
     catch(error){
         console.error("Error getting answers from localstorage ",error);
     }
 };
-const getCorrectAnswersPercent = (id:string): number | null | undefined =>{
+const getCorrectAnswersPercent = (id:string, url:string): number | null | undefined =>{
     try{
-        const quizAnswerDataString : string|null = localStorage.getItem(id);
-        if(quizAnswerDataString!=null){
-            const quizAnswerData : QuizzAnswerData = JSON.parse(quizAnswerDataString) as QuizzAnswerData;
-            return quizAnswerData.correctAnswersPercent;
+        const quizAnswerDataDictString : string|null = localStorage.getItem(id);
+        if(quizAnswerDataDictString!=null){
+            const quizAnswerDataDict : QuizzAnswerDataDict = JSON.parse(quizAnswerDataDictString) as QuizzAnswerDataDict;
+            if (quizAnswerDataDict!=null){
+                if (quizAnswerDataDict[url]!=null){
+                    return quizAnswerDataDict[url].correctAnswersPercent;
+                }
+            }
+            return undefined;
         }
-        return undefined;
+        return null;
     }
     catch(error){
         console.error("Error getting answers from localstorage ",error);
