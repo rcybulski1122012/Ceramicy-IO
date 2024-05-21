@@ -118,4 +118,4 @@ erDiagram
 
 ```
 # Burndown Chart
-![image](./charts/burndown_week1.png)
+![image](./charts/burndown_chart.png)
