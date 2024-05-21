@@ -86,7 +86,7 @@ const Editor = () => {
         }
 
         const data = await response.json();
-        const { correctLines, wrongLines } = mapResponseToState(response);
+        const { correctLines, wrongLines } = mapResponseToState(data);
         setCorrectLines(correctLines);
         setWrongLines(wrongLines);
         console.log('Checks:', data);
@@ -102,7 +102,7 @@ const Editor = () => {
     <div>
       <EditorTopSection
         x={smellCount}
-        y={4}
+        y={6}
         handleSubmit={handleSubmit}
       ></EditorTopSection>
       <CodeBlock code={code} language={language} lines={['4:6', '21:45']}>

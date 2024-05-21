@@ -20,12 +20,10 @@ async def get_quizzes(session: Annotated[AsyncSession, Depends(get_session)]) ->
 
 
 @router.post("/check/{quiz_id}", response_model=QuizCheckOut)
-async def check_files(
-    quiz_id: str,
-    session: Annotated[AsyncSession, Depends(get_session)],
+async def check_file(session: Annotated[AsyncSession, Depends(get_session)],
     file_check_in: QuizCheckIn,
 ) -> QuizCheckOut:
-    return await file_check_service.check_files(session, quiz_id, file_check_in)
+    return await file_check_service.check_files(session, file_check_in)
 
 
 @router.post("/", response_model=QuizOut)

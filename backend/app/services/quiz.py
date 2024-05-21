@@ -16,7 +16,7 @@ async def get_quizzes(session: AsyncSession) -> Sequence[Quiz]:
 async def get_quiz_by_id(session: AsyncSession, quiz_id: str) -> Quiz:
     statement = select(Quiz).filter(Quiz.id == quiz_id)
     result = await session.execute(statement)
-    quiz = await result.scalar_one_or_none()
+    quiz = result.scalar_one_or_none()
     if quiz is None:
         raise HTTPException(status_code=404, detail="Quiz not found")
     return quiz

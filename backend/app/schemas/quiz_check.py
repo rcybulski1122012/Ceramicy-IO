@@ -8,6 +8,9 @@ class Smell(BaseModel):
     end: int
     type: str
 
+    def __eq__(self, other):
+        return self.start == other['start'] and self.end == other['end'] and self.type == other['type']
+
 
 class File(BaseModel):
     """A class to represent a file and its code smells"""
