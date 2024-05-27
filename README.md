@@ -64,21 +64,21 @@ make task
     "smell_types": ["Unnecessary Comment", "Logic Error", "Incorect Typing"],
     "files": [
         {
-            "file_id": "path",
+            "file_path": "path",
             "smells": [
                 {"start": 5, "end": 5, "type": "Unnecessary Comment"},
                 {"start": 3, "end": 9, "type": "Logic Error"}
             ]
         },
         {
-            "file_id": "path2",
+            "file_path": "path2",
             "smells": [
                 {"start": 1, "end": 3, "type": "Unnecessary Comment"},
                 {"start": 8, "end": 10, "type": "Unnecessary Comment"}
             ]
         },
         {
-            "file_id": "path3", 
+            "file_path": "path3", 
             "smells": []
         }
     ]
