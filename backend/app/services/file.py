@@ -66,13 +66,14 @@ def is_zip(file: UploadFile) -> bool:
 
 
 async def upload_files_from_zip(zip_file: UploadFile) -> list[str]:
-    async with unzip_file(zip_file) as extracted_files:
-        return await upload_multiple_files(extracted_files)
+    tmp_root_dir_name = str(uuid.uuid4())
+    async with unzip_file(zip_file, tmp_root_dir_name) as extracted_files:
+        return await upload_multiple_files(extracted_files, tmp_root_dir_name)
 
 
 @contextlib.asynccontextmanager
-async def unzip_file(file: UploadFile) -> AsyncContextManager[list[Path]]:
-    temp_dir = TMP_PATH / f"{uuid.uuid4()}"
+async def unzip_file(file: UploadFile, root_dir_name: str) -> AsyncContextManager[list[Path]]:
+    temp_dir = TMP_PATH / root_dir_name
     extracted_files_path = temp_dir / "extracted_files"
     extracted_files_path.mkdir(parents=True, exist_ok=True)
     zip_file_path = await _save_zip_file(file, temp_dir)
@@ -80,9 +81,7 @@ async def unzip_file(file: UploadFile) -> AsyncContextManager[list[Path]]:
     with ZipFile(zip_file_path.absolute(), "r") as zip_ref:
         zip_ref.extractall(extracted_files_path)
 
-    extracted_files = [file for file in extracted_files_path.iterdir()]
-    # MacOS creates some hidden folder
-    extracted_files = [file for file in extracted_files if "__MACOSX" not in file.parts]
+    extracted_files = _list_all_files_in_directory(extracted_files_path)
 
     try:
         yield extracted_files
@@ -100,6 +99,20 @@ async def _save_zip_file(file: UploadFile, directory: Path) -> Path:
     return zip_path
 
 
+def _list_all_files_in_directory(directory_path: Path) -> list[Path]:
+    file_paths = []
+    for path in directory_path.iterdir():
+        # MacOS creates some hidden folder
+        if "__MACOSX" in path.parts:
+            continue
+        elif path.is_file():
+            file_paths.append(path)
+        else:
+            file_paths.extend(_list_all_files_in_directory(path))
+
+    return file_paths
+
+
 def _delete_files(path: Path) -> None:
     for file in path.iterdir():
         if file.is_file():
@@ -109,17 +122,17 @@ def _delete_files(path: Path) -> None:
     path.rmdir()
 
 
-async def upload_multiple_files(file_paths: list[Path]) -> list[str]:
-    blob_directory = str(uuid.uuid4())
+async def upload_multiple_files(file_paths: list[Path], root_dir_name: str) -> list[str]:
     async with (BlobServiceClient.from_connection_string(settings.BLOB_STORAGE_CONNECTION_STRING) as client,):
-        tasks = [_upload_single_file_from_disc(client, blob_directory, file_path) for file_path in file_paths]
+        tasks = [_upload_single_file_from_disc(client, root_dir_name, file_path) for file_path in file_paths]
         return [url for url in await asyncio.gather(*tasks) if url is not None]
 
 
 async def _upload_single_file_from_disc(
-    blob_service_client: BlobServiceClient, blob_directory: str, file_path: Path
+    blob_service_client: BlobServiceClient, root_dir_name: str, file_path: Path
 ) -> str | None:
-    blob_path = f"{blob_directory}/{file_path.name}"
+    file_relative_path = str(file_path.absolute()).split(root_dir_name)[-1].strip("/")
+    blob_path = f"{root_dir_name}/{file_relative_path}"
 
     async with (
         aiofiles.open(file_path, "rb") as f,
