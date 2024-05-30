@@ -123,7 +123,7 @@ def _delete_files(path: Path) -> None:
 
 
 async def upload_multiple_files(file_paths: list[Path], root_dir_name: str) -> list[str]:
-    async with (BlobServiceClient.from_connection_string(settings.BLOB_STORAGE_CONNECTION_STRING) as client,):
+    async with (BlobServiceClient.from_connection_string(settings.BLOB_STORAGE_CONNECTION_STRING) as client):
         tasks = [_upload_single_file_from_disc(client, root_dir_name, file_path) for file_path in file_paths]
         return [url for url in await asyncio.gather(*tasks) if url is not None]
 
@@ -131,7 +131,7 @@ async def upload_multiple_files(file_paths: list[Path], root_dir_name: str) -> l
 async def _upload_single_file_from_disc(
     blob_service_client: BlobServiceClient, root_dir_name: str, file_path: Path
 ) -> str | None:
-    file_relative_path = str(file_path.absolute()).split(root_dir_name)[-1].strip("/")
+    file_relative_path = str(file_path.absolute()).split(f"{root_dir_name}/extracted_files")[-1].strip("/")
     blob_path = f"{root_dir_name}/{file_relative_path}"
 
     async with (
