@@ -19,7 +19,7 @@ class Session(Base):
 
     host: Mapped["User"] = relationship()
     quiz: Mapped["Quiz"] = relationship()
-    participants: Mapped[list["UserSession"]] = relationship(back_populates="session")
+    participants: Mapped[list["UserSession"]] = relationship(back_populates="session", cascade="all, delete-orphan")
 
 
 class UserSession(Base):

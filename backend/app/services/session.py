@@ -36,3 +36,13 @@ async def join_session(db_session: AsyncSession, session_id: str, user_name: str
     await session_obj.awaitable_attrs.quiz
 
     return session_obj
+
+
+async def delete_session(db_session: AsyncSession, session_id: str, current_user_id: str) -> None:
+    session_obj = await get_session_by_id(db_session, session_id)
+
+    if session_obj.host_id != current_user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not the host of this session")
+
+    await db_session.delete(session_obj)
+    await db_session.commit()

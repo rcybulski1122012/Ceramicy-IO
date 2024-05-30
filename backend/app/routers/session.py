@@ -35,3 +35,13 @@ async def join_session(
     db_session: Annotated[AsyncSession, Depends(get_session)], session_id: str, session_join_in: SessionJoinIn
 ) -> Session:
     return await session_service.join_session(db_session, session_id, session_join_in.user_name)
+
+
+@router.delete("/{session_id}")
+async def delete_session(
+    db_session: Annotated[AsyncSession, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)],
+    session_id: str,
+) -> str:
+    await session_service.delete_session(db_session, session_id, current_user.id)
+    return session_id
