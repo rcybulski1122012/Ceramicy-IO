@@ -1,5 +1,6 @@
 from fastapi import HTTPException, UploadFile, status
 
+import asyncio
 import contextlib
 import uuid
 from pathlib import Path
@@ -17,6 +18,13 @@ TMP_PATH = Path("/tmp")
 
 MEGABYTE = 1024 * 1024
 CHUNK_SIZE = 50 * MEGABYTE
+MAX_FILE_SIZE = 500 * MEGABYTE
+
+
+def verify_file_size(file: UploadFile) -> UploadFile:
+    if file.size > MAX_FILE_SIZE:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, f"File size exceeds {MAX_FILE_SIZE} bytes")
+    return file
 
 
 async def upload_single_file(file: UploadFile) -> str:
@@ -40,6 +48,14 @@ def _check_if_text_based_file(file: bytes, mime_type: str) -> None:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, f"File with mime type {mime_type} is not text-based")
 
 
+def _is_file_text_based(file: bytes) -> bool:
+    try:
+        file.decode("utf-8")
+        return True
+    except UnicodeDecodeError:
+        return False
+
+
 def _get_blob_url(blob_path: str) -> str:
     quoted_blob_path = quote(blob_path)
     return f"{settings.BLOB_STORAGE_URL}/{quoted_blob_path}"
@@ -51,8 +67,7 @@ def is_zip(file: UploadFile) -> bool:
 
 async def upload_files_from_zip(zip_file: UploadFile) -> list[str]:
     async with unzip_file(zip_file) as extracted_files:
-        print(extracted_files)
-        return []
+        return await upload_multiple_files(extracted_files)
 
 
 @contextlib.asynccontextmanager
@@ -92,3 +107,29 @@ def _delete_files(path: Path) -> None:
         else:
             _delete_files(file)
     path.rmdir()
+
+
+async def upload_multiple_files(file_paths: list[Path]) -> list[str]:
+    blob_directory = str(uuid.uuid4())
+    async with (BlobServiceClient.from_connection_string(settings.BLOB_STORAGE_CONNECTION_STRING) as client,):
+        tasks = [_upload_single_file_from_disc(client, blob_directory, file_path) for file_path in file_paths]
+        return [url for url in await asyncio.gather(*tasks) if url is not None]
+
+
+async def _upload_single_file_from_disc(
+    blob_service_client: BlobServiceClient, blob_directory: str, file_path: Path
+) -> str | None:
+    blob_path = f"{blob_directory}/{file_path.name}"
+
+    async with (
+        aiofiles.open(file_path, "rb") as f,
+        blob_service_client.get_blob_client(settings.BLOB_STORAGE_CONTAINER_NAME, blob_path) as blob_client,
+    ):
+        file_bytes = await f.read()
+
+        if not _is_file_text_based(file_bytes):
+            return None
+
+        await blob_client.upload_blob(file_bytes)
+
+    return _get_blob_url(blob_path)
