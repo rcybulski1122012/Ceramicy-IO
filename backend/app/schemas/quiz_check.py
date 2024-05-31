@@ -19,7 +19,6 @@ class File(BaseModel):
 class QuizCheckIn(BaseModel):
     """A class to represent a quiz and smells in it's files"""
 
-    quiz_id: str
     files: list[File]
 
 
@@ -27,8 +26,7 @@ class QuizCheckOut(BaseModel):
     """A class to represent the results of a quiz check"""
 
     quiz_id: str
-    score: int  # possible change to List[float] for more detailed scoring 
+    score: int  # possible change to List[float] for more detailed scoring
     not_found_smells: dict[str, list[Smell]]
     incorrect_smells: dict[str, list[Smell]]
     correct_smells: dict[str, list[Smell]]
-    

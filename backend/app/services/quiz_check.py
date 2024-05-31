@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models.quiz import Quiz
 from app.schemas.quiz_check import QuizCheckIn, QuizCheckOut
 from app.services.quiz import get_quiz_by_id
-from app.models.quiz import Quiz
 
 
 def score_smells(file_check_in: QuizCheckIn, db_quiz: Quiz) -> QuizCheckOut:
@@ -48,7 +49,6 @@ def score_smells(file_check_in: QuizCheckIn, db_quiz: Quiz) -> QuizCheckOut:
     )
 
 
-async def check_files(session: AsyncSession, file_check_in: QuizCheckIn) -> QuizCheckOut:
-    quiz_id = file_check_in.quiz_id
+async def check_files(session: AsyncSession, quiz_id: str, file_check_in: QuizCheckIn) -> QuizCheckOut:
     db_quiz = await get_quiz_by_id(session, quiz_id)
     return score_smells(file_check_in, db_quiz)
