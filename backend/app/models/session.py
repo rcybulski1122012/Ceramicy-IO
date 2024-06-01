@@ -1,6 +1,6 @@
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import func, ForeignKey
+from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -13,13 +13,13 @@ if TYPE_CHECKING:
 class Session(Base):
     __tablename__ = "session"
 
-    id: Mapped[str] = mapped_column(primary_key=True, server_default=func.gen_random_uuid())
+    id: Mapped[str] = mapped_column(primary_key=True, server_default=func.uuid_generate_v4())
     host_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
     quiz_id: Mapped[str] = mapped_column(ForeignKey("quiz.id"))
 
     host: Mapped["User"] = relationship()
     quiz: Mapped["Quiz"] = relationship()
-    participants: Mapped[list["UserSession"]] = relationship(back_populates="session")
+    participants: Mapped[list["UserSession"]] = relationship(back_populates="session", cascade="all, delete-orphan")
 
 
 class UserSession(Base):
@@ -27,6 +27,6 @@ class UserSession(Base):
 
     user_name: Mapped[str] = mapped_column(primary_key=True)
     session_id: Mapped[str] = mapped_column(ForeignKey("session.id"))
-    solution: Mapped[dict[str, Any]]
+    solution: Mapped[dict[str, Any] | None] = mapped_column(default=None)
 
     session: Mapped[Session] = relationship(back_populates="participants")
