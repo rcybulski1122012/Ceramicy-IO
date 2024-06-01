@@ -4,7 +4,7 @@ import asyncio
 import contextlib
 import uuid
 from pathlib import Path
-from typing import AsyncContextManager
+from typing import AsyncGenerator
 from urllib.parse import quote
 from zipfile import ZipFile
 
@@ -72,7 +72,7 @@ async def upload_files_from_zip(zip_file: UploadFile) -> list[str]:
 
 
 @contextlib.asynccontextmanager
-async def unzip_file(file: UploadFile, root_dir_name: str) -> AsyncContextManager[list[Path]]:
+async def unzip_file(file: UploadFile, root_dir_name: str) -> AsyncGenerator[list[Path], None, None]:
     temp_dir = TMP_PATH / root_dir_name
     extracted_files_path = temp_dir / "extracted_files"
     extracted_files_path.mkdir(parents=True, exist_ok=True)
