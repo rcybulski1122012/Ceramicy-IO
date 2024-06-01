@@ -1,9 +1,5 @@
-from enum import Enum
+from enum import StrEnum
 
-class StrEnum(str, Enum):
-    def __str__(self):
-        return str(self.value)
-    
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -23,4 +19,3 @@ class User(Base):
     email: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
     role: Mapped[UserRole]
-
