@@ -1,15 +1,14 @@
 from fastapi import HTTPException, status
 
-from sqlalchemy import select, desc
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.session import Session, UserSession
+from app.models.user import User
+from app.services.quiz import get_quiz_by_id
 from app.schemas.session import UserSessionRankingOut
 from app.schemas.quiz_check import QuizCheckIn
 from app.services.quiz_check import check_files
-from app.models.user import User
-from app.services.quiz import get_quiz_by_id
-
 
 async def create_session(db_session: AsyncSession, quiz_id: str, current_user: User) -> Session:
     await get_quiz_by_id(db_session, quiz_id)
@@ -64,7 +63,7 @@ async def get_session_ranking(db_session: AsyncSession, session_id: str) -> list
         submitted_files = user_session.solution
         file_check_in = QuizCheckIn(files=submitted_files)
         quiz_check_out = await check_files(db_session, session.quiz_id, file_check_in)
-        
+
         rankings.append(UserSessionRankingOut(user_name=user_name, score=quiz_check_out.score))
 
     rankings.sort(key=lambda x: x.score, reverse=True)
