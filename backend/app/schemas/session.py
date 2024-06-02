@@ -14,3 +14,7 @@ class SessionOut(SchemaBase):
     id: str
     host_id: str
     quiz: QuizOut
+
+class UserSessionRankingOut(SchemaBase):
+    user_name: str
+    score: int

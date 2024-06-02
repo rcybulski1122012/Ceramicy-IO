@@ -1,9 +1,12 @@
 from fastapi import HTTPException, status
 
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.session import Session, UserSession
+from app.schemas.session import UserSessionRankingOut
+from app.schemas.quiz_check import QuizCheckIn
+from app.services.quiz_check import check_files
 from app.models.user import User
 from app.services.quiz import get_quiz_by_id
 
@@ -46,3 +49,23 @@ async def delete_session(db_session: AsyncSession, session_id: str, current_user
 
     await db_session.delete(session_obj)
     await db_session.commit()
+
+async def get_session_ranking(db_session: AsyncSession, session_id: str) -> list[UserSessionRankingOut]:
+    session = await get_session_by_id(db_session, session_id)
+    participants = session.participants
+
+    if not participants:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No participants found for this session")
+
+    rankings = []
+    for user_session in participants:
+        user_name = user_session.user_name
+
+        submitted_files = user_session.solution
+        file_check_in = QuizCheckIn(files=submitted_files)
+        quiz_check_out = await check_files(db_session, session.quiz_id, file_check_in)
+        
+        rankings.append(UserSessionRankingOut(user_name=user_name, score=quiz_check_out.score))
+
+    rankings.sort(key=lambda x: x.score, reverse=True)
+    return rankings
