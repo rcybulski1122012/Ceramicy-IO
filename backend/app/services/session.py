@@ -51,10 +51,10 @@ async def delete_session(db_session: AsyncSession, session_id: str, current_user
 
 async def get_session_ranking(db_session: AsyncSession, session_id: str) -> list[UserSessionRankingOut]:
     session = await get_session_by_id(db_session, session_id)
-    participants = session.participants
-
+    participants = await session.awaitable_attrs.participants
+    
     if not participants:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No participants found for this session")
+        return []
 
     rankings = []
     for user_session in participants:
@@ -64,7 +64,7 @@ async def get_session_ranking(db_session: AsyncSession, session_id: str) -> list
         file_check_in = QuizCheckIn(files=submitted_files)
         quiz_check_out = await check_files(db_session, session.quiz_id, file_check_in)
 
-        rankings.append(UserSessionRankingOut(user_name=user_name, score=quiz_check_out.score))
+        rankings.append(UserSessionRankingOut(user_name=user_name, score=quiz_check_out.score, solution=submitted_files))
 
     rankings.sort(key=lambda x: x.score, reverse=True)
     return rankings
