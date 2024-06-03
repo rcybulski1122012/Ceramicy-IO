@@ -8,9 +8,9 @@ from app.models.user import User
 from app.services.quiz import get_quiz_by_id
 
 
-async def create_session(db_session: AsyncSession, quiz_id: str, current_user: User) -> Session:
+async def create_session(db_session: AsyncSession, quiz_id: str, current_user: User, session_url: str) -> Session:
     await get_quiz_by_id(db_session, quiz_id)
-    session_obj = Session(quiz_id=quiz_id, host=current_user)
+    session_obj = Session(quiz_id=quiz_id, host=current_user, session_url=session_url)
     db_session.add(session_obj)
     await db_session.commit()
     await db_session.refresh(session_obj)

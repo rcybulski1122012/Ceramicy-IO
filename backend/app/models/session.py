@@ -16,6 +16,7 @@ class Session(Base):
     id: Mapped[str] = mapped_column(primary_key=True, server_default=func.uuid_generate_v4())
     host_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
     quiz_id: Mapped[str] = mapped_column(ForeignKey("quiz.id"))
+    session_url: Mapped[str]
 
     host: Mapped["User"] = relationship()
     quiz: Mapped["Quiz"] = relationship()

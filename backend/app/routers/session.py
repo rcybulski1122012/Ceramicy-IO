@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from typing import Annotated
 
@@ -19,8 +19,14 @@ async def create_session(
     db_session: Annotated[AsyncSession, Depends(get_session)],
     current_user: Annotated[User, Depends(get_current_user)],
     session_in: SessionIn,
+    request: Request,
 ) -> Session:
-    return await session_service.create_session(db_session, session_in.quiz_id, current_user)
+    return await session_service.create_session(
+        db_session,
+        session_in.quiz_id,
+        current_user,
+        f"{request.url.path}/{session_in.quiz_id}/join"
+    )
 
 
 @router.get("/{session_id}", response_model=SessionOut)
