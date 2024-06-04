@@ -6,7 +6,6 @@ from app.services.quiz import get_quiz_by_id
 
 
 def score_smells(file_check_in: QuizCheckIn, db_quiz: Quiz) -> QuizCheckOut:
-    quiz_id = file_check_in.quiz_id
     db_smells = db_quiz.code_smells
     response_files = [file for file in file_check_in.files]
     response_smells = {}
@@ -41,7 +40,6 @@ def score_smells(file_check_in: QuizCheckIn, db_quiz: Quiz) -> QuizCheckOut:
         score -= len(not_found_smells[file]) + len(incorrect_smells[file])
 
     return QuizCheckOut(
-        quiz_id=quiz_id,
         score=max(0, score),
         not_found_smells=not_found_smells,
         incorrect_smells=incorrect_smells,

@@ -6,7 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.session import Session, UserSession
 from app.models.user import User
 from app.services.quiz import get_quiz_by_id
-
+from app.schemas.session import UserSessionRankingOut
+from app.schemas.quiz_check import QuizCheckIn
+from app.services.quiz_check import check_files
 
 async def create_session(db_session: AsyncSession, quiz_id: str, current_user: User) -> Session:
     await get_quiz_by_id(db_session, quiz_id)
@@ -46,3 +48,23 @@ async def delete_session(db_session: AsyncSession, session_id: str, current_user
 
     await db_session.delete(session_obj)
     await db_session.commit()
+
+async def get_session_ranking(db_session: AsyncSession, session_id: str) -> list[UserSessionRankingOut]:
+    session = await get_session_by_id(db_session, session_id)
+    participants = await session.awaitable_attrs.participants
+    
+    if not participants:
+        return []
+
+    rankings = []
+    for user_session in participants:
+        user_name = user_session.user_name
+
+        submitted_files = user_session.solution
+        file_check_in = QuizCheckIn(files=submitted_files)
+        quiz_check_out = await check_files(db_session, session.quiz_id, file_check_in)
+
+        rankings.append(UserSessionRankingOut(user_name=user_name, score=quiz_check_out.score, solution=submitted_files))
+
+    rankings.sort(key=lambda x: x.score, reverse=True)
+    return rankings

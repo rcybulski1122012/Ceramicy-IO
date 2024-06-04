@@ -8,7 +8,7 @@ import app.services.session as session_service
 from app.db import get_session
 from app.models.session import Session
 from app.models.user import User
-from app.schemas.session import SessionIn, SessionJoinIn, SessionOut
+from app.schemas.session import SessionIn, SessionJoinIn, SessionOut, UserSessionRankingOut
 from app.services.user import get_current_user
 
 router = APIRouter(tags=["Session"], prefix="/session")
@@ -45,3 +45,9 @@ async def delete_session(
 ) -> str:
     await session_service.delete_session(db_session, session_id, current_user.id)
     return session_id
+
+@router.get("/{session_id}/ranking", response_model=list[UserSessionRankingOut])
+async def get_session_ranking(
+    db_session: Annotated[AsyncSession, Depends(get_session)], session_id: str
+) -> list[UserSessionRankingOut]:
+    return await session_service.get_session_ranking(db_session, session_id)

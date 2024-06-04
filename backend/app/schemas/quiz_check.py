@@ -25,7 +25,6 @@ class QuizCheckIn(BaseModel):
 class QuizCheckOut(BaseModel):
     """A class to represent the results of a quiz check"""
 
-    quiz_id: str
     score: int  # possible change to List[float] for more detailed scoring
     not_found_smells: dict[str, list[Smell]]
     incorrect_smells: dict[str, list[Smell]]
