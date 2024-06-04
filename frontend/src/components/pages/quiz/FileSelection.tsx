@@ -9,7 +9,7 @@ type FileSelectionProps = {
 
 const FileSelection = ({ quiz, files }: FileSelectionProps) => {
   const theme = useTheme();
-
+  files;
   return (
     <Flex
       direction={'column'}

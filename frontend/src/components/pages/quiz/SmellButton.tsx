@@ -12,6 +12,7 @@ import {
   RadioGroup,
   Stack,
   Tooltip,
+  Box,
 } from '@chakra-ui/react';
 import { LineRange } from './LineRange';
 
@@ -155,8 +156,8 @@ const SmellButton: React.FC<SmellButtonProps> = ({
       onClose={handlePopoverCloseWithSelectedValue}
     >
       <PopoverTrigger>
-        <div
-          style={{ width: '100%', height: '15px', display: 'flex' }}
+        <Box
+          sx={{ width: '100%', height: '15px', display: 'flex' }}
           onClick={handleClick}
         >
           <Tooltip
@@ -164,12 +165,12 @@ const SmellButton: React.FC<SmellButtonProps> = ({
             aria-label="A tooltip"
             isDisabled={!isLineBreakpoint}
           >
-            <div style={buttonStyle}>
-              <div style={topLineStyle}></div>
-              <div style={bottomLineStyle}></div>
-            </div>
+            <Box style={buttonStyle}>
+              <Box style={topLineStyle}></Box>
+              <Box style={bottomLineStyle}></Box>
+            </Box>
           </Tooltip>
-        </div>
+        </Box>
       </PopoverTrigger>
       <PopoverContent>
         <PopoverArrow />

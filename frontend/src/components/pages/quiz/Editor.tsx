@@ -33,7 +33,7 @@ const Editor = () => {
   }, []);
 
   const [smellLines, setSmellLines] = useState<Smell[][]>([]);
-  let smellCount: number = smellLines.reduce(
+  const smellCount: number = smellLines.reduce(
     (count, subArray) => count + subArray.length,
     0,
   );
@@ -45,6 +45,8 @@ const Editor = () => {
   ];
   const [correctLines, setCorrectLines] = useState<number[][]>([[4, 6]]);
   const [wrongLines, setWrongLines] = useState<number[][]>([[21, 26]]);
+  setCorrectLines;
+  setWrongLines;
 
   const isCorrect = (lineNumber: number) => {
     return correctLines.some(
