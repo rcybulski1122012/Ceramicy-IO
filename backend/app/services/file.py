@@ -72,7 +72,7 @@ async def upload_files_from_zip(zip_file: UploadFile) -> list[str]:
 
 
 @contextlib.asynccontextmanager
-async def unzip_file(file: UploadFile, root_dir_name: str) -> AsyncGenerator[list[Path], None, None]:
+async def unzip_file(file: UploadFile, root_dir_name: str) -> AsyncGenerator[list[Path], None]:
     temp_dir = TMP_PATH / root_dir_name
     extracted_files_path = temp_dir / "extracted_files"
     extracted_files_path.mkdir(parents=True, exist_ok=True)
@@ -123,7 +123,7 @@ def _delete_files(path: Path) -> None:
 
 
 async def upload_multiple_files(file_paths: list[Path], root_dir_name: str) -> list[str]:
-    async with (BlobServiceClient.from_connection_string(settings.BLOB_STORAGE_CONNECTION_STRING) as client):
+    async with BlobServiceClient.from_connection_string(settings.BLOB_STORAGE_CONNECTION_STRING) as client:
         tasks = [_upload_single_file_from_disc(client, root_dir_name, file_path) for file_path in file_paths]
         return [url for url in await asyncio.gather(*tasks) if url is not None]
 
