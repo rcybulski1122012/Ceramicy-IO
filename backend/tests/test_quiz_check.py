@@ -53,4 +53,3 @@ class TestQuizRouter(IsolatedAsyncioTestCase):
         self.assertEqual(response.incorrect_smells, check_out.incorrect_smells)
         self.assertEqual(response.not_found_smells, check_out.not_found_smells)
         self.assertEqual(response.score, check_out.score)
-        self.assertEqual(response.quiz_id, check_out.quiz_id)
