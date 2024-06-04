@@ -3,8 +3,8 @@ import { useTheme } from '@emotion/react';
 import { Quiz } from '../../../data/quizzes';
 
 type FileSelectionProps = {
-    quiz: Quiz;
-    files: File[];
+  quiz: Quiz;
+  files: File[];
 };
 
 const FileSelection = ({ quiz, files }: FileSelectionProps) => {

@@ -18,12 +18,12 @@ export type Smell = {
   start: number;
   end: number;
   type: string;
-}
+};
 
 export type SmellType = {
   type: string;
   color: string;
-}
+};
 
 type Language = 'Python' | 'Javascript' | 'Ruby' | 'Elixir' | 'C++' | 'C#';
 type CodeSmell =

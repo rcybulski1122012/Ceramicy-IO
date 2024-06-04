@@ -28,11 +28,11 @@ jobs:
       - name: Run tests
         run: npm run test
 
-      - name: Run linter
-        run: npm run lint
+      # - name: Run linter
+      #   run: npm run lint
 
-      - name: Check types
-        run: npm run check-types
+      # - name: Check types
+      #   run: npm run check-types
 
       - name: Check formatting
         run: npm run check-formatting

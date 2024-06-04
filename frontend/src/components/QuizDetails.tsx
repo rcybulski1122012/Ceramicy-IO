@@ -55,7 +55,7 @@ const QuizDetails = ({ selectedQuiz }: QuizDetailsProps) => {
           </VStack>
           <Divider colorScheme="blue" size="100" h="5px" />
           <Link to="quiz/1">
-            <Button w="200px" bg="primary" p={7} >
+            <Button w="200px" bg="primary" p={7}>
               Start Quiz
             </Button>
           </Link>
