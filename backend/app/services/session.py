@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.session import Session, UserSession
@@ -68,3 +68,12 @@ async def get_session_ranking(db_session: AsyncSession, session_id: str) -> list
 
     rankings.sort(key=lambda x: x.score, reverse=True)
     return rankings
+
+async def asign_solution_to_user_session(db_session: AsyncSession, session_id: str, user_name: str, solution: QuizCheckIn) -> None:
+    statement = (
+        update(UserSession)
+        .where(UserSession.session_id == session_id, UserSession.user_name == user_name)
+        .values(solution=solution.model_dump())
+    )
+    await db_session.execute(statement)
+    await db_session.commit()
