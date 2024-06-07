@@ -94,3 +94,12 @@ async def assign_solution_to_user_session(
     )
     await db_session.execute(statement)
     await db_session.commit()
+
+
+async def get_sessions_by_quiz_id(db_session: AsyncSession, quiz_id: str):
+    statement = select(Session).filter(Session.quiz_id == quiz_id)
+    result = await db_session.execute(statement)
+    sessions = result.scalar_one_or_none()
+    if sessions is None:
+        return []
+    return list(map(lambda s: s.id, result))

@@ -16,7 +16,16 @@ class SessionOut(SchemaBase):
     host_id: str
     quiz: QuizOut
 
+
 class UserSessionRankingOut(SchemaBase):
     user_name: str
     score: int
     solution: dict[str, Any]
+
+
+class SessionListItemOut(SchemaBase):
+    id: str
+
+
+class SessionListOut(SchemaBase):
+    sessions: list[SessionListItemOut]
