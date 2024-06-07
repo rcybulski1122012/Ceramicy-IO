@@ -29,3 +29,10 @@ class QuizCheckOut(BaseModel):
     not_found_smells: dict[str, list[Smell]]
     incorrect_smells: dict[str, list[Smell]]
     correct_smells: dict[str, list[Smell]]
+
+
+class UserQuizSolutionIn(BaseModel):
+    """A class to represent the user quiz submission"""
+
+    user_name: str
+    files: list[File]
