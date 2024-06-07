@@ -5,10 +5,12 @@ from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import app.services.session as session_service
+import app.services.quiz_check as quiz_check_service
 from app.db import get_session
 from app.models.session import Session
 from app.models.user import User
 from app.schemas.session import SessionIn, SessionJoinIn, SessionOut, UserSessionRankingOut
+from app.schemas.quiz_check import QuizCheckIn, QuizCheckOut
 from app.services.user import get_current_user
 
 router = APIRouter(tags=["Session"], prefix="/session")
@@ -46,8 +48,21 @@ async def delete_session(
     await session_service.delete_session(db_session, session_id, current_user.id)
     return session_id
 
+
 @router.get("/{session_id}/ranking", response_model=list[UserSessionRankingOut])
 async def get_session_ranking(
     db_session: Annotated[AsyncSession, Depends(get_session)], session_id: str
 ) -> list[UserSessionRankingOut]:
     return await session_service.get_session_ranking(db_session, session_id)
+
+
+@router.post("/{session_id}/ranking/{user_name}/submit", response_model=QuizCheckOut)
+async def check_solution(
+    db_session: Annotated[AsyncSession, Depends(get_session)],
+    session_id: str,
+    user_name: str,
+    quiz_id: str,
+    files_in: QuizCheckIn,
+) -> QuizCheckOut:
+    await session_service.asign_solution_to_user_session(db_session, session_id, user_name)
+    return await quiz_check_service.check_files(db_session, quiz_id, files_in)
