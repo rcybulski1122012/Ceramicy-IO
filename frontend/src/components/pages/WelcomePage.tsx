@@ -1,11 +1,11 @@
 import {ChangeEvent, useState} from 'react';
 import { Box, Flex, Input, Button, Text } from '@chakra-ui/react';
+import {useUser} from "../../contexts/UserContext.tsx";
 
-interface WelcomePageProps{
-    setLogged: (hasLogged:boolean)=>void;
-}
-const WelcomePage = ({setLogged}:WelcomePageProps) => {
+
+const WelcomePage = () => {
         const [nameValue,setNameValue]=useState('');
+        const {setUserName} = useUser();
         const handleChange = (event:ChangeEvent<HTMLInputElement>) => {
             setNameValue(event.target.value);
         }
@@ -15,7 +15,7 @@ const WelcomePage = ({setLogged}:WelcomePageProps) => {
                 console.log("cannot be null");
             }
             else{
-                setLogged(true);
+                setUserName(nameValue);
             }
         }
         return(

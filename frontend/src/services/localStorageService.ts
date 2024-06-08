@@ -106,4 +106,21 @@ const deleteData = () :void=>{
     return;
 };
 
-export {saveAnswers,saveCorrectAnswersPercent,getAnswers,getCorrectAnswersPercent,deleteData}
+const getName = () : string | null =>{
+    return localStorage.getItem("name");
+};
+const setName = (name:string) : void =>{
+    localStorage.setItem("name",name);
+    return;
+};
+const deleteName = () : void=>{
+    localStorage.setItem("name","");
+    return;
+};
+
+const log = () : void =>{
+    console.log(localStorage);
+    return;
+}
+
+export {saveAnswers,saveCorrectAnswersPercent,getAnswers,getCorrectAnswersPercent,deleteData,getName,setName,deleteName,log}

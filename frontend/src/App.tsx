@@ -3,6 +3,7 @@ import theme from './theme/theme';
 import { RouterProvider, createHashRouter } from 'react-router-dom';
 import MainPage from './components/pages/MainPage';
 import QuizPage from './components/pages/quiz/QuizPage';
+import {UserProvider} from "./contexts/UserContext.tsx";
 
 const router = createHashRouter([
   {
@@ -18,7 +19,9 @@ const router = createHashRouter([
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <RouterProvider router={router}></RouterProvider>
+      <UserProvider>
+        <RouterProvider router={router}></RouterProvider>
+      </UserProvider>
     </ChakraProvider>
   );
 }
