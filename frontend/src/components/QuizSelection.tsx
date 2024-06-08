@@ -23,6 +23,7 @@ const QuizSelection = ({ quizzes, onQuizSelection }: QuizSelectionProps) => {
       py={6}
       pr={8}
       gap={4}
+      height={'100%'}
       borderRight={`3px solid ${theme.colors.gray[50]}`}
     >
       <Text fontFamily={'heading'} textStyle={'h2'}>

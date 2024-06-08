@@ -1,52 +1,70 @@
-import { Box, Flex, Text, chakra } from '@chakra-ui/react';
-import QuizList, { QuizDetails } from './QuizList';
+import { Radio, RadioGroup, VStack, Text, Box } from '@chakra-ui/react';
 import { useTheme } from '@emotion/react';
-import { Quiz } from '../data/quizzes';
+import { useState } from 'react';
 
-type QuizSelectionProps = {
-  quizzes: Quiz[];
-  onQuizSelection: (quizId: string) => void;
+type SessionListProps = {
+  sessions: SessionDetails[];
+  onSessionSelection: (sessionId: string) => void;
 };
 
-type QuizSession = {
+export type SessionDetails = {
+  id: string;
+};
 
-}
-
-const SessionList = ({ quizzes, onQuizSelection }: QuizSelectionProps) => {
+const SessionList = ({ sessions, onSessionSelection }: SessionListProps) => {
   const theme = useTheme();
+  const [selectedSession, setSelectedSession] = useState('random');
 
-  const quizzSessionsList = quizzes.map((quiz) => ({
-    id: quiz.id,
-    label: quiz.name,
-  })) as QuizSession[];
+  const isSelected = (_value: string | number) => _value == selectedSession;
+
+  const onSelectedSessionChange = (sessionId: string) => {
+    onSessionSelection(sessionId);
+    setSelectedSession(sessionId);
+  };
 
   return (
-    <Flex
-      direction={'column'}
-      align={'start'}
-      py={6}
-      pr={8}
-      gap={4}
-      borderRight={`3px solid ${theme.colors.gray[50]}`}
+    <RadioGroup
+      width={'100%'}
+      height={'100%'}
+      onChange={onSelectedSessionChange}
+      value={selectedSession}
     >
-      <Text fontFamily={'heading'} textStyle={'h2'}>
-        Available Quizzes
-      </Text>
-      <Text fontFamily={'body'}>
-        Select quiz to test your practical knowledge. Each quiz consists of one
-        or more files where your task is to find Code
-        <chakra.span color={'secondary'} fontWeight={'bold'}>
-          Smells
-        </chakra.span>
-        . Select quiz to see more details!
-      </Text>
-      <Box px={2} w={'100%'} mt={8}>
-        <QuizList
-          quizzes={quizzDetailsList}
-          onQuizSelection={onQuizSelection}
-        />
-      </Box>
-    </Flex>
+      <VStack alignItems={'start'} w={'100%'} h={'100%'}>
+        {sessions.map((session) => (
+          <Box
+            key={session.id}
+            w="100%"
+            h="100%"
+            borderLeftRadius={12}
+            _hover={{ background: 'green.10', color: 'black' }}
+            sx={
+              isSelected(session.id)
+                ? {
+                    background: 'green.50 !important',
+                    color: 'black',
+                    fontWeight: '900 !important',
+                    borderRight: `4px solid ${theme.colors.primary}`,
+                  }
+                : {}
+            }
+          >
+            <Radio
+              spacing={8}
+              key={session.id}
+              w={'100%'}
+              px={5}
+              py={3}
+              value={`${session.id}`}
+              _hover={{ background: 'red' }}
+            >
+              <Text fontFamily={'heading'} fontSize={14} fontWeight={'bold'}>
+                {session.id}
+              </Text>
+            </Radio>
+          </Box>
+        ))}
+      </VStack>
+    </RadioGroup>
   );
 };
 
