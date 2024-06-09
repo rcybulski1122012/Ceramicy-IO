@@ -11,7 +11,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <Flex direction={'column'} height={'100vh'} width={'100vw'}>
       <Header />
-      <Flex flexGrow={1} px={20}>
+      <Flex flexGrow={1} px={20} direction="column">
         {children}
       </Flex>
       <Footer />

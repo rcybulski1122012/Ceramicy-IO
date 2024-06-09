@@ -1,15 +1,22 @@
-import {Text, Flex, chakra, Icon, useColorMode, Button} from '@chakra-ui/react';
+import {
+  Text,
+  Flex,
+  chakra,
+  Icon,
+  useColorMode,
+  Button,
+} from '@chakra-ui/react';
 import { useTheme } from '@emotion/react';
 import { FaUserGraduate } from 'react-icons/fa';
 import { RiCodeSSlashFill } from 'react-icons/ri';
 import { Switch } from '@chakra-ui/react';
-import {useUser} from "../../contexts/UserContext.tsx";
+import { useUser } from '../../contexts/UserContext.tsx';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
   const theme = useTheme();
-  const {colorMode, toggleColorMode} = useColorMode();
-  const {userName, deleteUserName} = useUser();
+  const { colorMode, toggleColorMode } = useColorMode();
+  const { userName, deleteUserName } = useUser();
   return (
     <Flex
       px={20}
@@ -39,13 +46,15 @@ const Header = () => {
             fontWeight={'bold'}
           />
           <Text fontFamily={'heading'} fontSize={'lg'} fontWeight={'bold'}>
-            {userName || "Twoje imie"}
+            {userName || 'Twoje imie'}
           </Text>
-          {userName &&
+          {userName && (
             <Link to="/">
-                <Button ml={5} mr={5} onClick={deleteUserName}>delete data</Button>
+              <Button ml={5} mr={5} onClick={deleteUserName}>
+                delete data
+              </Button>
             </Link>
-          }
+          )}
         </Flex>
         <Switch
           size="md"

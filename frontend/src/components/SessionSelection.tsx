@@ -1,9 +1,8 @@
-import { Box, Flex, Text, chakra } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { useTheme } from '@emotion/react';
 import { Quiz } from '../data/quizzes';
-import config from '../config';
+
 import { Session } from '../data/sessions';
-import { useEffect, useState } from 'react';
 import SessionList from './SessionList';
 
 type SessionSelectionProps = {
