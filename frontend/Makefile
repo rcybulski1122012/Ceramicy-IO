@@ -33,3 +33,26 @@ shell:	## Run project with docker-compose up - start local server
 .PHONY: down
 down: ## Stop project with docker-compose and remove containers and networks
 	docker-compose down --remove-orphans | true
+
+
+.PHONY: build-linux
+build-linux:	## Build project with docker compose and generate node_modeules module for local development
+	make down-linux
+	rm -rf node_modules
+	docker compose run --rm code_smell_app npm ci --build
+
+.PHONY: up-linux
+up-linux:	## Run project with docker compose up - start local server
+	docker compose up
+
+.PHONY: task-linux
+task-linux:	## Run project with docker compose up - start local server
+	docker compose exec code_smell_app npm run task
+
+.PHONY: shell-linux
+shell-linux:	## Run project with docker compose up - start local server
+	docker compose exec code_smell_app sh
+
+.PHONY: down-linux
+down-linux: ## Stop project with docker compose and remove containers and networks
+	docker compose down --remove-orphans | true
