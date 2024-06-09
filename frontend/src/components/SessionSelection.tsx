@@ -21,19 +21,6 @@ const SessionSelection = ({
   selectedQuiz,
   onSessionSelection,
 }: SessionSelectionProps) => {
-  // const [sessions, setSessions] = useState<Session[]>([])
-
-  // useEffect(() => {
-  //   fetch(config.backendUrl + '/api/v1/quiz/' + selectedQuiz?.id, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((json) => setSessions(json))
-  //     .catch((error) => console.error(error));
-  // }, []);
   const theme = useTheme();
   const quizSessionsList = sessions.map((session) => ({
     id: session.id,
@@ -51,7 +38,7 @@ const SessionSelection = ({
       borderRight={`3px solid ${theme.colors.gray[50]}`}
     >
       <Text fontFamily={'heading'} textStyle={'h2'}>
-        Quiz {selectedQuiz?.id} Sessions
+        Quiz {selectedQuiz?.name} Sessions
       </Text>
       <Text fontFamily={'body'}>
         Select available session to see the ranking or add a new session
