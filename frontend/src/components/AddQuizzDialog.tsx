@@ -12,9 +12,30 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import QuizzAddForm from './QuizzAddForm';
+import { QuizCreatePayload, createQuiz, uploadFiles } from '../api/quizzSubmit';
+import { useMutation } from '@tanstack/react-query';
+import { TailSpin } from 'react-loader-spinner';
 
 const AddQuizzDialog = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const uploadFilesMutation = useMutation({
+    mutationFn: (file: File) => uploadFiles(file),
+  });
+  const createQuizMutation = useMutation({
+    mutationFn: (quiz: QuizCreatePayload) => createQuiz(quiz),
+  });
+
+  const onFormSubmit = async (file: File, quizData: QuizCreatePayload) => {
+    try {
+      const fileUrls = await uploadFilesMutation.mutateAsync(file);
+      const quizPayload = { ...quizData, fileUrls };
+      await createQuizMutation.mutateAsync(quizPayload);
+      onClose();
+    } catch (error) {
+      console.error('Error uploading quiz:', error);
+    }
+  };
 
   return (
     <Flex justifyContent="flex-end" alignItems="center" my={'14px'}>
@@ -49,7 +70,12 @@ const AddQuizzDialog = () => {
           </ModalHeader>
           <ModalCloseButton _hover={{ bg: 'red', color: 'white' }} />
           <ModalBody>
-            <QuizzAddForm />
+            {(uploadFilesMutation.isPending ||
+              createQuizMutation.isPending) && <TailSpin />}
+            {(createQuizMutation.isError || createQuizMutation.isError) && (
+              <Text color="red">Something went wrong...</Text>
+            )}
+            <QuizzAddForm onFormSubmit={onFormSubmit} />
           </ModalBody>
         </ModalContent>
       </Modal>

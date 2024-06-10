@@ -15,23 +15,35 @@ import CodeLanguageBadge from './CodeLanguageBadge';
 import { Tooltip } from '@chakra-ui/react';
 import { FaInfoCircle } from 'react-icons/fa';
 import { FormEvent } from 'react';
+import { parseJsonFile } from '../shared/loadJson';
+import { QuizCreatePayload } from '../api/quizzSubmit';
 
 const codeLanguages = ['Python', 'Javascript', 'Ruby', 'Elixir', 'C++', 'C#'];
 
-const QuizzAddForm = () => {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+type QuizzAddFormProps = {
+  onFormSubmit: (file: File, quizData: QuizCreatePayload) => void;
+};
+
+const QuizzAddForm = ({ onFormSubmit }: QuizzAddFormProps) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
 
     const values = {
-      quizName: data.get('quizName'),
-      mainLanguage: data.get('mainLanguage'),
-      zipFile: data.get('zipFile'),
-      jsonFile: data.get('jsonFile'),
+      name: data.get('quizName') as string,
+      mainLanguage: data.get('mainLanguage') as string,
+      zipFile: data.get('zipFile') as File,
+      jsonFile: data.get('jsonFile') as File,
     };
-    console.log(values);
-  };
 
+    const codeSmells = await parseJsonFile(values.jsonFile);
+    onFormSubmit(values.zipFile, {
+      name: values.name,
+      mainLanguage: values.mainLanguage,
+      fileUrls: [],
+      codeSmells,
+    } as QuizCreatePayload);
+  };
   return (
     <chakra.form onSubmit={handleSubmit}>
       <Flex direction="column" gap="30px">
