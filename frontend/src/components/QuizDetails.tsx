@@ -54,7 +54,7 @@ const QuizDetails = ({ selectedQuiz }: QuizDetailsProps) => {
             <CodeLanguageList languages={selectedQuiz.languages} />
           </VStack>
           <Divider colorScheme="blue" size="100" h="5px" />
-          <Link to="quiz/1">
+          <Link to={`quiz/${selectedQuiz.id}`}>
             <Button w="200px" bg="primary" p={7}>
               Start Quiz
             </Button>
