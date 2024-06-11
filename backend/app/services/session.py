@@ -1,3 +1,4 @@
+import json
 from fastapi import HTTPException, status
 
 from sqlalchemy import select, update
@@ -6,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.session import Session, UserSession
 from app.models.user import User
 from app.services.quiz import get_quiz_by_id
-from app.schemas.session import UserSessionRankingOut
+from app.schemas.session import UserSessionRankingOut, SessionListItemOut
 from app.schemas.quiz_check import QuizCheckIn
 from app.services.quiz_check import check_files
 
@@ -32,6 +33,13 @@ async def get_session_by_id(db_session: AsyncSession, session_id: str) -> Sessio
 
 
 async def join_session(db_session: AsyncSession, session_id: str, user_name: str) -> Session:
+    statement = select(UserSession).filter(UserSession.user_name==user_name, UserSession.session_id==session_id)
+    session = await db_session.execute(statement)
+    if session.scalar_one_or_none() is not None:
+        raise HTTPException(
+            status_code=400,
+            detail="Session with this user_name already exists"
+        )
     session_obj = await get_session_by_id(db_session, session_id)
     session_association = UserSession(user_name=user_name, session_id=session_id)
     db_session.add(session_association)
@@ -63,6 +71,11 @@ async def get_session_ranking(db_session: AsyncSession, session_id: str) -> list
         user_name = user_session.user_name
 
         submitted_files = user_session.solution
+        if submitted_files is None:
+            rankings.append(
+                UserSessionRankingOut(user_name=user_name, score=0, solution={})
+            )
+            continue
         file_check_in = QuizCheckIn(files=submitted_files)
         quiz_check_out = await check_files(db_session, session.quiz_id, file_check_in)
 
@@ -94,3 +107,13 @@ async def assign_solution_to_user_session(
     )
     await db_session.execute(statement)
     await db_session.commit()
+
+
+async def get_sessions_by_quiz_id(db_session: AsyncSession, quiz_id: str) -> list[SessionListItemOut]:
+    statement = select(Session).filter(Session.quiz_id == quiz_id)
+    result = await db_session.execute(statement)
+    sessions = result.scalars().all()
+    if sessions is None:
+        return []
+    response = list(map(lambda s: SessionListItemOut(id=s.id), sessions))
+    return response
