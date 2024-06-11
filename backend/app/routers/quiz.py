@@ -16,7 +16,7 @@ from app.services import session as session_service
 router = APIRouter(tags=["Quiz"], prefix="/quiz")
 
 
-@router.get("/", response_model=list[QuizOutList])
+@router.get("/", response_model=list[QuizOut])
 async def get_quizzes(session: Annotated[AsyncSession, Depends(get_session)]) -> Sequence[Quiz]:
     return await quiz_service.get_quizzes(session)
 
