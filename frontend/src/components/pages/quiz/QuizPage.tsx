@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 const QuizPage = (quiz_id: string) => {
   const [selectedFileContent, setSelectedFileContent] = useState<string>('');
   const [quizData, setQuizData] = useState<Array<{ id: string, name: string, url: string, smell_count: number }>>([]);
-  const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+  const [selectedFileId, setSelectedFileId] = useState<string>('');
 
   const process_quiz_data = (data: any) => {
     console.log(data)
@@ -81,7 +81,7 @@ const QuizPage = (quiz_id: string) => {
           />
         </GridItem>
         <GridItem colSpan={5} w="100%" p={6}>
-          <Editor></Editor>
+          <Editor quizId={selectedFileId} fileUrl={''}></Editor>
         </GridItem>
       </Grid>
     </Layout>
