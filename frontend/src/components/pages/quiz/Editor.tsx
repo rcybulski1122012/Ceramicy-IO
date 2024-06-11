@@ -1,15 +1,15 @@
 import { CodeBlock } from 'react-code-block';
 import SmellButton from './SmellButton';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import useLineRange from './LineRange';
 import quizzes, { Smell } from '../../../data/quizzes';
 import EditorTopSection from './EditorTopSection';
 import { smellTypes } from './data';
-import {getAnswers} from "../../../services/localStorageService.ts";
+import {getAnswers, saveAnswers} from "../../../services/localStorageService.ts";
 
 const Editor = ({ quizId, fileUrl, fileName, fileContent, fileLanguage, fileSmellCount }) => {
   const [smellLines, setSmellLines] = useState<Smell[][]>(()=>{
-      const savedAnswers = getAnswers(quizzes[0].id,'0');
+      const savedAnswers = getAnswers(quizId,fileUrl);
       if(savedAnswers){
           return savedAnswers;
       }
@@ -119,7 +119,9 @@ const Editor = ({ quizId, fileUrl, fileName, fileContent, fileLanguage, fileSmel
 
     checkQuiz();
   };
-
+  useEffect(() => {
+    saveAnswers(quizId, fileUrl, smellLines);
+  }, [smellLines]);
   return (
     <div>
       <EditorTopSection
