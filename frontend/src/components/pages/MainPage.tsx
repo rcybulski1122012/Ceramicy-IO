@@ -2,19 +2,27 @@ import { Grid, GridItem } from '@chakra-ui/react';
 import Layout from '../layout/Layout';
 import QuizSelection from '../QuizSelection';
 import QuizDetails from '../QuizDetails';
-import quizzes, { Quiz } from '../../data/quizzes';
+import { Quiz } from '../../data/quizzes';
 import { useState } from 'react';
 import WelcomePage from './WelcomePage.tsx';
 import { useUser } from '../../contexts/UserContext.tsx';
+import { useQuery } from '@tanstack/react-query';
+import { getQuizzes } from '../../api/quizzes.ts';
 
 const MainPage = () => {
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
   const { userName } = useUser();
   const isLogged = Boolean(userName);
+
+  const quizResult = useQuery({ queryKey: ['quizzes'], queryFn: getQuizzes });
+
+  const quizzes = quizResult.data || [];
+
   const setQuiz = (quizId: string) => {
     const quiz = quizzes.find((quiz) => quiz.id === quizId);
     setSelectedQuiz(quiz ?? null);
   };
+
   return (
     <Layout>
       <Grid templateColumns="repeat(7, 1fr)" width="100%">
