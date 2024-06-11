@@ -36,7 +36,6 @@ const QuizPage = (quiz_id: string) => {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        quiz_id = 'dbeafc38-19ce-4438-be88-1d47e124ada0'; // needs to be passed from the list
         const response = await fetch(
           `http://localhost:8000/api/v1/quiz/${quiz_id}`,
         );
