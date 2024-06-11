@@ -15,7 +15,7 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { LineRange } from './LineRange';
-import {saveAnswers} from "../../../services/localStorageService.ts";
+import { saveAnswers } from '../../../services/localStorageService.ts';
 
 interface SmellButtonProps {
   id: number;
@@ -121,7 +121,7 @@ const SmellButton: React.FC<SmellButtonProps> = ({
             (smell) => !(smell.start <= id && smell.end >= id),
           ) || [];
         setSmellLines(updated);
-        saveAnswers(quizzes[0].id,'0',updated);
+        saveAnswers(quizzes[0].id, '0', updated);
       } else {
         setStart(id, col);
         lineRange.col = col;
@@ -141,7 +141,7 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     updated[col].push({ start: start!, end: end!, type: type });
 
     setSmellLines(updated);
-    saveAnswers(quizzes[0].id,'0',updated)
+    saveAnswers(quizzes[0].id, '0', updated);
     reset();
   };
 

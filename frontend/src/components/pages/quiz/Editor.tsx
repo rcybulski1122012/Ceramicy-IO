@@ -5,7 +5,7 @@ import useLineRange from './LineRange';
 import quizzes, { Smell } from '../../../data/quizzes';
 import EditorTopSection from './EditorTopSection';
 import { code, filename, language, smellTypes } from './data';
-import {getAnswers} from "../../../services/localStorageService.ts";
+import { getAnswers } from '../../../services/localStorageService.ts';
 
 const Editor = () => {
   useEffect(() => {
@@ -33,15 +33,14 @@ const Editor = () => {
     fetchQuizzes();
   }, []);
 
-
-  const [smellLines, setSmellLines] = useState<Smell[][]>(()=>{
-      const savedAnswers = getAnswers(quizzes[0].id,'0');
-      if(savedAnswers){
-          return savedAnswers;
-      }
-      return [[]];
+  const [smellLines, setSmellLines] = useState<Smell[][]>(() => {
+    const savedAnswers = getAnswers(quizzes[0].id, '0');
+    if (savedAnswers) {
+      return savedAnswers;
+    }
+    return [[]];
   });
-  let smellCount: number = smellLines.reduce(
+  const smellCount: number = smellLines.reduce(
     (count, subArray) => count + subArray.length,
     0,
   );

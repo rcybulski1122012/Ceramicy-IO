@@ -1,6 +1,7 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import Layout from '../layout/Layout';
 import QuizSelection from '../QuizSelection';
+import AddQuizzDialog from '../AddQuizzDialog';
 import QuizDetails from '../QuizDetails';
 import { Quiz } from '../../data/quizzes';
 import { useEffect, useState } from 'react';
@@ -50,6 +51,7 @@ const AdminPage = () => {
 
   return (
     <Layout>
+      <AddQuizzDialog />
       <Grid templateColumns="repeat(9, 1fr)" width={'100%'}>
         <GridItem colSpan={3}>
           <QuizSelection quizzes={quizzes} onQuizSelection={setQuiz} />
