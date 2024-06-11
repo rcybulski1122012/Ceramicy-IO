@@ -19,7 +19,7 @@ const FileSelection = ({ quiz, files, onFileSelect }: FileSelectionProps) => {
     setSelectedFile(fileId);
     // onFileSelect(fileContent);
   };
-  
+
   return (
     <Flex
       direction={'column'}
@@ -78,7 +78,7 @@ const FileSelection = ({ quiz, files, onFileSelect }: FileSelectionProps) => {
                       {file.name}
                     </Text>
                     <Text fontFamily="heading" fontSize={18} fontWeight="bold">
-                      {'7' + '/' + '10'}
+                      {'0' + '/' + quiz.smell_count}
                     </Text>
                   </Flex>
                 </Radio>

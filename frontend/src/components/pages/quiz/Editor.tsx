@@ -7,7 +7,7 @@ import EditorTopSection from './EditorTopSection';
 import { smellTypes } from './data';
 import {getAnswers} from "../../../services/localStorageService.ts";
 
-const Editor = ({ quizId, fileUrl, fileName, fileContent, fileLanguage }) => {
+const Editor = ({ quizId, fileUrl, fileName, fileContent, fileLanguage, fileSmellCount }) => {
   const [smellLines, setSmellLines] = useState<Smell[][]>(()=>{
       const savedAnswers = getAnswers(quizzes[0].id,'0');
       if(savedAnswers){
@@ -124,7 +124,7 @@ const Editor = ({ quizId, fileUrl, fileName, fileContent, fileLanguage }) => {
     <div>
       <EditorTopSection
         x={smellCount}
-        y={10}
+        y={fileSmellCount}
         handleSubmit={handleSubmit}
       ></EditorTopSection>
       <CodeBlock code={fileContent} language={fileLanguage} lines={['4:6', '21:45']}>

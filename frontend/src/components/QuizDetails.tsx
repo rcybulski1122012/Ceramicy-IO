@@ -17,6 +17,7 @@ type QuizDetailsProps = {
 };
 
 const QuizDetails = ({ selectedQuiz }: QuizDetailsProps) => {
+  console.log(selectedQuiz?.id);
   return (
     <Center w="100%" h="100%">
       {selectedQuiz && (

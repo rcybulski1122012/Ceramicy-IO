@@ -3,14 +3,18 @@ import Layout from '../../layout/Layout';
 import FileSelection from './FileSelection';
 import Editor from './Editor';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-const QuizPage = (quiz_id: string) => {
+const QuizPage = () => {
   const [selectedFileContent, setSelectedFileContent] = useState<string>('');
   const [quizData, setQuizData] = useState<Array<{ id: string, name: string, url: string, smell_count: number, language: string }>>([]);
   const [selectedFileId, setSelectedFileId] = useState<string>('');
   const [selectedFileUrl, setSelectedFileUrl] = useState('');
   const [selectedFileName, setSelectedFileName] = useState('');
   const [selectedFileLanguage, setSelectedFileLanguage] = useState('');
+  const [selectedSmellCount, setSelectedSmellCount] = useState(0);
+  const params = useParams()
+  const quiz_id = params.quizId
 
   const process_quiz_data = (data: any) => {
     console.log(data)
@@ -49,7 +53,7 @@ const QuizPage = (quiz_id: string) => {
     };
 
     fetchQuizData();
-  }, [quiz_id]);
+  }, []);
 
   useEffect(() => {
     const fetchFileContent = async () => {
@@ -61,6 +65,7 @@ const QuizPage = (quiz_id: string) => {
             setSelectedFileUrl(selectedFile.url);
             setSelectedFileName(selectedFile.name);
             setSelectedFileLanguage(selectedFile.language)
+            setSelectedSmellCount(selectedFile.smell_count)
             const response = await fetch(selectedFile.url);
             const fileContent = await response.text();
             console.log(fileContent);
@@ -84,13 +89,13 @@ const QuizPage = (quiz_id: string) => {
       <Grid templateColumns="repeat(7, 1fr)" width={'100%'}>
         <GridItem colSpan={2} minWidth={'360px'}>
           <FileSelection
-            quiz={quizData.find(file => file.id === selectedFileId) || {id: '', name: ''}}
+            quiz={quizData.find(file => file.id === selectedFileId) || {id: '', name: '', smell_count: 0}}
             files={quizData}
             onFileSelect={handleFileSelect}
           />
         </GridItem>
         <GridItem colSpan={5} w="100%" p={6}>
-          <Editor quizId={selectedFileId} fileUrl={selectedFileUrl} fileName={selectedFileName} fileContent={selectedFileContent} fileLanguage={selectedFileLanguage}></Editor>
+          <Editor quizId={selectedFileId} fileUrl={selectedFileUrl} fileName={selectedFileName} fileContent={selectedFileContent} fileLanguage={selectedFileLanguage} fileSmellCount={selectedSmellCount}></Editor>
         </GridItem>
       </Grid>
     </Layout>
