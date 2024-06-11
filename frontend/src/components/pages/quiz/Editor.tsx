@@ -1,13 +1,13 @@
 import { CodeBlock } from 'react-code-block';
 import SmellButton from './SmellButton';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useLineRange from './LineRange';
 import quizzes, { Smell } from '../../../data/quizzes';
 import EditorTopSection from './EditorTopSection';
-import { code, filename, language, smellTypes } from './data';
+import { smellTypes } from './data';
 import {getAnswers} from "../../../services/localStorageService.ts";
 
-const Editor = ({ quizId, fileUrl }) => {
+const Editor = ({ quizId, fileUrl, fileName, fileContent, fileLanguage }) => {
   const [smellLines, setSmellLines] = useState<Smell[][]>(()=>{
       const savedAnswers = getAnswers(quizzes[0].id,'0');
       if(savedAnswers){
@@ -90,6 +90,7 @@ const Editor = ({ quizId, fileUrl }) => {
           ),
         );
         console.log('Body:', body);
+        console.log('QuizID: ', quizId);
         const response = await fetch(
           'http://0.0.0.0:8000/api/v1/quiz/check/' + quizId,
           {
@@ -125,7 +126,7 @@ const Editor = ({ quizId, fileUrl }) => {
         y={10}
         handleSubmit={handleSubmit}
       ></EditorTopSection>
-      <CodeBlock code={code} language={language} lines={['4:6', '21:45']}>
+      <CodeBlock code={fileContent} language={fileLanguage} lines={['4:6', '21:45']}>
         <div
           style={{
             position: 'relative',
@@ -140,7 +141,7 @@ const Editor = ({ quizId, fileUrl }) => {
           <div
             style={{ fontSize: '12px', color: '#9ca3af', padding: '16px 24px' }}
           >
-            {filename}
+            {fileName}
           </div>
           <CodeBlock.Code style={{ padding: '0', overflow: 'scroll' }}>
             {({ lineNumber }) => (
@@ -210,7 +211,7 @@ const Editor = ({ quizId, fileUrl }) => {
               userSelect: 'none',
             }}
           >
-            {language}
+            {fileLanguage}
           </div>
         </div>
       </CodeBlock>

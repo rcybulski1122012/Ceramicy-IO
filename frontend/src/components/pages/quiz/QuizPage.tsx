@@ -1,28 +1,33 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import Layout from '../../layout/Layout';
-import { quizzes } from '../../../data/quizzes';
 import FileSelection from './FileSelection';
 import Editor from './Editor';
 import { useEffect, useState } from 'react';
 
 const QuizPage = (quiz_id: string) => {
   const [selectedFileContent, setSelectedFileContent] = useState<string>('');
-  const [quizData, setQuizData] = useState<Array<{ id: string, name: string, url: string, smell_count: number }>>([]);
+  const [quizData, setQuizData] = useState<Array<{ id: string, name: string, url: string, smell_count: number, language: string }>>([]);
   const [selectedFileId, setSelectedFileId] = useState<string>('');
+  const [selectedFileUrl, setSelectedFileUrl] = useState('');
+  const [selectedFileName, setSelectedFileName] = useState('');
+  const [selectedFileLanguage, setSelectedFileLanguage] = useState('');
 
   const process_quiz_data = (data: any) => {
     console.log(data)
     const fileUrls = data.file_urls;
         const codeSmells = data.code_smells;
         
-        const filesData = fileUrls.map((url: string, id: string) => {
+        const filesData = fileUrls.map((url: string) => {
           const fileName = url.split('/').pop() || '';
           const smellCount = codeSmells[url] ? codeSmells[url].length : 0;
+          const language = data.main_language;
+          const fileId = data.id
           return {
-            id: id,
+            id: fileId,
             name: fileName,
             url: url,
-            smell_count: smellCount
+            smell_count: smellCount,
+            language: language
           };
         });
     return filesData;
@@ -31,7 +36,7 @@ const QuizPage = (quiz_id: string) => {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        quiz_id = 'dbeafc38-19ce-4438-be88-1d47e124ada0';
+        quiz_id = 'dbeafc38-19ce-4438-be88-1d47e124ada0'; // needs to be passed from the list
         const response = await fetch(
           `http://localhost:8000/api/v1/quiz/${quiz_id}`,
         );
@@ -53,8 +58,13 @@ const QuizPage = (quiz_id: string) => {
         const selectedFile = quizData.find(file => file.id === selectedFileId);
         if (selectedFile) {
           try {
+            console.log(selectedFile)
+            setSelectedFileUrl(selectedFile.url);
+            setSelectedFileName(selectedFile.name);
+            setSelectedFileLanguage(selectedFile.language)
             const response = await fetch(selectedFile.url);
             const fileContent = await response.text();
+            console.log(fileContent);
             setSelectedFileContent(fileContent);
           } catch (error) {
             console.error('Error fetching file content:', error);
@@ -81,7 +91,7 @@ const QuizPage = (quiz_id: string) => {
           />
         </GridItem>
         <GridItem colSpan={5} w="100%" p={6}>
-          <Editor quizId={selectedFileId} fileUrl={''}></Editor>
+          <Editor quizId={selectedFileId} fileUrl={selectedFileUrl} fileName={selectedFileName} fileContent={selectedFileContent} fileLanguage={selectedFileLanguage}></Editor>
         </GridItem>
       </Grid>
     </Layout>
