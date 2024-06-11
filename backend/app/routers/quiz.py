@@ -8,8 +8,10 @@ from app.db import get_session
 from app.models.quiz import Quiz
 from app.schemas.quiz import QuizIn, QuizOut, QuizOutList
 from app.schemas.quiz_check import QuizCheckIn, QuizCheckOut
+from app.schemas.session import SessionListItemOut
 from app.services import quiz as quiz_service
 from app.services import quiz_check as file_check_service
+from app.services import session as session_service
 
 router = APIRouter(tags=["Quiz"], prefix="/quiz")
 
@@ -43,3 +45,11 @@ async def create_quiz(
 ) -> Quiz:
     quiz = await quiz_service.create_quiz(session, quiz_in.model_dump())
     return quiz
+
+
+@router.get("/{quiz_id}/sessions", response_model=list[SessionListItemOut])
+async def get_sessions(
+    db_session: Annotated[AsyncSession, Depends(get_session)],
+    quiz_id: str,
+):
+    return await session_service.get_sessions_by_quiz_id(db_session, quiz_id)
