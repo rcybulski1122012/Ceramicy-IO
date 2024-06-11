@@ -16,12 +16,7 @@ const MainPage = () => {
 
   const quizResult = useQuery({ queryKey: ['quizzes'], queryFn: getQuizzes });
 
-  console.log('Quizzes: ' + quizResult.data);
-  console.log('Error ' + quizResult.error);
   const quizzes = quizResult.data || [];
-
-  console.log('quizzes');
-  console.log(quizzes);
 
   const setQuiz = (quizId: string) => {
     const quiz = quizzes.find((quiz) => quiz.id === quizId);
