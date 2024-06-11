@@ -8,32 +8,6 @@ import { code, filename, language, smellTypes } from './data';
 import {getAnswers} from "../../../services/localStorageService.ts";
 
 const Editor = () => {
-  useEffect(() => {
-    const fetchQuizzes = async () => {
-      try {
-        const response = await fetch('http://0.0.0.0:8000/api/v1/quiz', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok.');
-        }
-
-        const data = await response.json();
-        console.log('Quizzes:', data);
-      } catch (error) {
-        console.error('Error fetching quizzes:', error);
-        // Handle error as needed
-      }
-    };
-
-    fetchQuizzes();
-  }, []);
-
-
   const [smellLines, setSmellLines] = useState<Smell[][]>(()=>{
       const savedAnswers = getAnswers(quizzes[0].id,'0');
       if(savedAnswers){
@@ -46,13 +20,15 @@ const Editor = () => {
     0,
   );
   const lineRange = useLineRange();
+  // const hoverLineRange = useLineRange();
+  const [hoverEnd, setHoverEnd] = useState();
 
   const [correctColor, wrongColor] = [
     'rgba(16, 185, 129, 0.15)',
     'rgba(185, 16, 50, 0.15)',
   ];
-  const [correctLines, setCorrectLines] = useState<number[][]>([[4, 6]]);
-  const [wrongLines, setWrongLines] = useState<number[][]>([[21, 26]]);
+  const [correctLines, setCorrectLines] = useState<number[][]>([]);
+  const [wrongLines, setWrongLines] = useState<number[][]>([]);
   setCorrectLines;
   setWrongLines;
 
@@ -126,6 +102,8 @@ const Editor = () => {
                         smellLines={smellLines}
                         setSmellLines={setSmellLines}
                         lineRange={lineRange}
+                        hoverEnd={hoverEnd}
+                        setHoverEnd={setHoverEnd}
                         smellTypes={smellTypes}
                       />
                     ))}

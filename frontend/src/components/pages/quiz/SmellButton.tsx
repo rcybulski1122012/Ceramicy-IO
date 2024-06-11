@@ -13,6 +13,7 @@ import {
   Stack,
   Tooltip,
   Box,
+  Button,
 } from '@chakra-ui/react';
 import { LineRange } from './LineRange';
 import {saveAnswers} from "../../../services/localStorageService.ts";
@@ -22,6 +23,8 @@ interface SmellButtonProps {
   col: number;
   smellLines: Smell[][];
   setSmellLines: React.Dispatch<React.SetStateAction<Smell[][]>>;
+  hoverEnd: any;
+  setHoverEnd: any;
   lineRange: LineRange;
   smellTypes: SmellType[];
 }
@@ -31,10 +34,21 @@ const SmellButton: React.FC<SmellButtonProps> = ({
   col,
   smellLines,
   setSmellLines,
+  hoverEnd,
+  setHoverEnd,
   lineRange,
   smellTypes,
 }) => {
   const { start, end, setStart, setEnd, reset, col: selectedCol } = lineRange;
+
+  const isLineHover = () => {
+    if (start !== null && hoverEnd !== null && col === selectedCol) {
+      if (id > start && id < hoverEnd) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   const isLineBreakpoint = smellLines[col]?.some(
     (smell) => id >= smell.start && id <= smell.end,
@@ -47,6 +61,24 @@ const SmellButton: React.FC<SmellButtonProps> = ({
   const showBottomLine = smellLines[col]?.some(
     (smell) => id >= smell.start && id <= smell.end - 1,
   );
+
+  const showHoverTopLine = () => {
+    if (start !== null && hoverEnd !== null && col === selectedCol) {
+      if (id >= start + 1 && id <= hoverEnd + 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  const showHoverBottomLine = () => {
+    if (start !== null && hoverEnd !== null && col === selectedCol) {
+      if (id >= start && id <= hoverEnd - 1) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   const type = smellLines[col]?.find(
     (smell) => id >= smell.start && id <= smell.end,
@@ -62,10 +94,16 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     width: '10px',
     height: '10px',
     borderRadius: '50%',
-    backgroundColor: isLineBreakpoint ? getSmellColor() : 'transparent',
-    border: isLineBreakpoint
-      ? '2px solid' + getSmellColor()
-      : '2px solid transparent',
+    backgroundColor: isLineHover() 
+    ? 'grey' 
+    : isLineBreakpoint 
+    ? getSmellColor() 
+    : 'transparent',
+    border: isLineHover() 
+    ? '2px solid grey' 
+    : isLineBreakpoint 
+    ? '2px solid' + getSmellColor() 
+    : '2px solid transparent',
     cursor: 'pointer',
     marginRight: '8px',
     marginLeft: '8px',
@@ -75,12 +113,16 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     position: 'absolute',
     width: '10px',
     height: '15px',
-    backgroundColor:
-      showBottomLine && isLineBreakpoint ? getSmellColor() : 'transparent',
-    border:
-      showBottomLine && isLineBreakpoint
-        ? '2px solid' + getSmellColor()
-        : '2px solid transparent',
+    backgroundColor: isLineHover() && showHoverBottomLine() 
+    ? 'grey' 
+    : showBottomLine && isLineBreakpoint 
+    ? getSmellColor() 
+    : 'transparent',
+    border: isLineHover() && showHoverBottomLine()  
+    ? '2px solid grey' 
+    : showBottomLine && isLineBreakpoint 
+    ? '2px solid' + getSmellColor() 
+    : '2px solid transparent',
     cursor: 'pointer',
     left: '-2px',
     top: '2px',
@@ -90,12 +132,16 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     position: 'absolute',
     width: '10px',
     height: '15px',
-    backgroundColor:
-      showTopLine && isLineBreakpoint ? getSmellColor() : 'transparent',
-    border:
-      showTopLine && isLineBreakpoint
-        ? '2px solid' + getSmellColor()
-        : '2px solid transparent',
+    backgroundColor: isLineHover() && showHoverTopLine() 
+    ? 'grey' 
+    : showTopLine && isLineBreakpoint 
+    ? getSmellColor() 
+    : 'transparent',
+  border: isLineHover() && showHoverTopLine()  
+    ? '2px solid grey' 
+    : showTopLine && isLineBreakpoint 
+    ? '2px solid' + getSmellColor() 
+    : '2px solid transparent',
     cursor: 'pointer',
     left: '-2px',
     top: '-12px',
@@ -131,7 +177,19 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     }
   };
 
-  const handlePopoverClose = (type: string, col: number) => {
+  const handleHover = () => {
+    if (start != null && end === null) {
+      setHoverEnd(id);
+      console.log("Enter")
+    }
+  }
+
+  const handleMouseExit = () => {
+    setHoverEnd(0);
+    console.log("Exit")
+  }
+
+  const handlePopoverSubmit = (type: string, col: number) => {
     setLocalPopoverOpen(false);
 
     const updated = smellLines.slice();
@@ -145,8 +203,13 @@ const SmellButton: React.FC<SmellButtonProps> = ({
     reset();
   };
 
-  const handlePopoverCloseWithSelectedValue = () => {
-    handlePopoverClose(selectedValue, col);
+  const handlePopoverClose = () => {
+    setLocalPopoverOpen(false);
+    reset();
+  }
+
+  const handlePopoverSubmitWithSelectedValue = () => {
+    handlePopoverSubmit(selectedValue, col);
   };
 
   const handleRadioChange = (value: string) => {
@@ -156,12 +219,14 @@ const SmellButton: React.FC<SmellButtonProps> = ({
   return (
     <Popover
       isOpen={localPopoverOpen}
-      onClose={handlePopoverCloseWithSelectedValue}
+      onClose={handlePopoverClose}
     >
       <PopoverTrigger>
         <Box
           sx={{ width: '100%', height: '15px', display: 'flex' }}
           onClick={handleClick}
+          onMouseEnter={handleHover}
+          onMouseLeave={handleMouseExit}
         >
           <Tooltip
             label={type}
@@ -196,6 +261,7 @@ const SmellButton: React.FC<SmellButtonProps> = ({
               ))}
             </Stack>
           </RadioGroup>
+          <Button mt={'12px'} onClick={handlePopoverSubmitWithSelectedValue}>Submit</Button>
         </PopoverBody>
       </PopoverContent>
     </Popover>
