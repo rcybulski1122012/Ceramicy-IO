@@ -1,18 +1,26 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import {deleteData, getName, setName} from "../services/localStorageService.ts";
-
-
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from 'react';
+import {
+  deleteData,
+  getName,
+  setName,
+} from '../services/localStorageService.ts';
 
 interface UserContextProps {
   userName: string;
-  deleteUserName:()=>void;
+  deleteUserName: () => void;
   setUserName: (name: string) => void;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [userName , setUserName] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
 
   useEffect(() => {
     const storedUserName = getName();
@@ -25,13 +33,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setUserName(name);
     setName(name);
   };
- const deleteUserName = ():void =>{
-   deleteData();
-   setUserName("");
-
- };
+  const deleteUserName = (): void => {
+    deleteData();
+    setUserName('');
+  };
   return (
-    <UserContext.Provider value={{ userName, deleteUserName, setUserName: updateUserName }}>
+    <UserContext.Provider
+      value={{ userName, deleteUserName, setUserName: updateUserName }}
+    >
       {children}
     </UserContext.Provider>
   );

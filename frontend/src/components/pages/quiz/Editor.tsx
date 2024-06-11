@@ -14,8 +14,9 @@ const Editor = ({ quizId, fileUrl, fileName, fileContent, fileLanguage }) => {
           return savedAnswers;
       }
       return [[]];
+
   });
-  let smellCount: number = smellLines.reduce(
+  const smellCount: number = smellLines.reduce(
     (count, subArray) => count + subArray.length,
     0,
   );
