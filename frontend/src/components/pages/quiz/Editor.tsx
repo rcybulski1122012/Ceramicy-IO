@@ -1,57 +1,35 @@
 import { CodeBlock } from 'react-code-block';
 import SmellButton from './SmellButton';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useLineRange from './LineRange';
 import quizzes, { Smell } from '../../../data/quizzes';
 import EditorTopSection from './EditorTopSection';
-import { code, filename, language, smellTypes } from './data';
-import { getAnswers } from '../../../services/localStorageService.ts';
+import { smellTypes } from './data';
+import {getAnswers} from "../../../services/localStorageService.ts";
 
-const Editor = () => {
-  useEffect(() => {
-    const fetchQuizzes = async () => {
-      try {
-        const response = await fetch('http://0.0.0.0:8000/api/v1/quiz', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok.');
-        }
-
-        const data = await response.json();
-        console.log('Quizzes:', data);
-      } catch (error) {
-        console.error('Error fetching quizzes:', error);
-        // Handle error as needed
+const Editor = ({ quizId, fileUrl, fileName, fileContent, fileLanguage }) => {
+  const [smellLines, setSmellLines] = useState<Smell[][]>(()=>{
+      const savedAnswers = getAnswers(quizzes[0].id,'0');
+      if(savedAnswers){
+          return savedAnswers;
       }
-    };
+      return [[]];
 
-    fetchQuizzes();
-  }, []);
-
-  const [smellLines, setSmellLines] = useState<Smell[][]>(() => {
-    const savedAnswers = getAnswers(quizzes[0].id, '0');
-    if (savedAnswers) {
-      return savedAnswers;
-    }
-    return [[]];
   });
   const smellCount: number = smellLines.reduce(
     (count, subArray) => count + subArray.length,
     0,
   );
   const lineRange = useLineRange();
+  // const hoverLineRange = useLineRange();
+  const [hoverEnd, setHoverEnd] = useState();
 
   const [correctColor, wrongColor] = [
     'rgba(16, 185, 129, 0.15)',
     'rgba(185, 16, 50, 0.15)',
   ];
-  const [correctLines, setCorrectLines] = useState<number[][]>([[4, 6]]);
-  const [wrongLines, setWrongLines] = useState<number[][]>([[21, 26]]);
+  const [correctLines, setCorrectLines] = useState<number[][]>([]);
+  const [wrongLines, setWrongLines] = useState<number[][]>([]);
   setCorrectLines;
   setWrongLines;
 
@@ -67,9 +45,79 @@ const Editor = () => {
     );
   };
 
+  const toQuizCheckObject = (
+    quiz_id: string,
+    file_url: string,
+    smells: any,
+  ) => {
+    return {
+      quiz_id: quiz_id,
+      files: [
+        {
+          file_url: file_url,
+          smells: smells,
+        },
+      ],
+    };
+  };
+  
+  const mapResponseToState = (response: any) => {
+    // Extract the not_found_smells and incorrect_smells and combine them as wrongLines
+    const wrongLines = [
+      ...Object.values(response.not_found_smells)
+        .flat()
+        .map((smell: any) => [smell.start, smell.end]),
+      ...Object.values(response.incorrect_smells)
+        .flat()
+        .map((smell: any) => [smell.start, smell.end]),
+    ];
+  
+    // Extract the correct_smells as correctLines
+    const correctLines = Object.values(response.correct_smells)
+      .flat()
+      .map((smell: any) => [smell.start, smell.end]);
+  
+    return { correctLines, wrongLines };
+  };
+
   const handleSubmit = () => {
-    console.log(smellLines.reduce((acc, val) => acc.concat(val), []));
-    // sending request with smellLines and then updating correctLines and wrongLines
+    const checkQuiz = async () => {
+      try {
+        const body = JSON.stringify(
+          toQuizCheckObject(
+            quizId,
+            fileUrl,
+            smellLines.reduce((acc, val) => acc.concat(val)),
+          ),
+        );
+        console.log('Body:', body);
+        console.log('QuizID: ', quizId);
+        const response = await fetch(
+          'http://0.0.0.0:8000/api/v1/quiz/check/' + quizId,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: body,
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+
+        const data = await response.json();
+        const { correctLines, wrongLines } = mapResponseToState(data);
+        setCorrectLines(correctLines);
+        setWrongLines(wrongLines);
+        console.log('Checks:', data);
+      } catch (error) {
+        console.error('Error checking wuiz:', error);
+      }
+    };
+
+    checkQuiz();
   };
 
   return (
@@ -79,7 +127,7 @@ const Editor = () => {
         y={10}
         handleSubmit={handleSubmit}
       ></EditorTopSection>
-      <CodeBlock code={code} language={language} lines={['4:6', '21:45']}>
+      <CodeBlock code={fileContent} language={fileLanguage} lines={['4:6', '21:45']}>
         <div
           style={{
             position: 'relative',
@@ -94,7 +142,7 @@ const Editor = () => {
           <div
             style={{ fontSize: '12px', color: '#9ca3af', padding: '16px 24px' }}
           >
-            {filename}
+            {fileName}
           </div>
           <CodeBlock.Code style={{ padding: '0', overflow: 'scroll' }}>
             {({ lineNumber }) => (
@@ -125,6 +173,8 @@ const Editor = () => {
                         smellLines={smellLines}
                         setSmellLines={setSmellLines}
                         lineRange={lineRange}
+                        hoverEnd={hoverEnd}
+                        setHoverEnd={setHoverEnd}
                         smellTypes={smellTypes}
                       />
                     ))}
@@ -162,7 +212,7 @@ const Editor = () => {
               userSelect: 'none',
             }}
           >
-            {language}
+            {fileLanguage}
           </div>
         </div>
       </CodeBlock>

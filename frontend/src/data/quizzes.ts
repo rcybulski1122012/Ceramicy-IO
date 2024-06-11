@@ -10,7 +10,7 @@ export type Quiz = {
 export type File = {
   id: string;
   name: string;
-  content: string;
+  url: string;
   // TODO add smells
 };
 
@@ -33,7 +33,7 @@ type CodeSmell =
   | 'Logic Error'
   | 'Invocation Error';
 
-const quizzes = [
+export const quizzes = [
   {
     id: '1',
     name: 'Quiz 1',
