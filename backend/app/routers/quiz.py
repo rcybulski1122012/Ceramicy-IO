@@ -8,7 +8,7 @@ from app.db import get_session
 from app.models.quiz import Quiz
 from app.schemas.quiz import QuizIn, QuizOut, QuizOutList
 from app.schemas.quiz_check import QuizCheckIn, QuizCheckOut
-from app.schemas.session import SessionListOut
+from app.schemas.session import SessionListItemOut
 from app.services import quiz as quiz_service
 from app.services import quiz_check as file_check_service
 from app.services import session as session_service
@@ -47,7 +47,7 @@ async def create_quiz(
     return quiz
 
 
-@router.get("/{quiz_id}/sessions", response_model=SessionListOut)
+@router.get("/{quiz_id}/sessions", response_model=list[SessionListItemOut])
 async def get_sessions(
     db_session: Annotated[AsyncSession, Depends(get_session)],
     quiz_id: str,

@@ -39,7 +39,7 @@ const AdminPage = () => {
       },
     })
       .then((response) => response.json())
-      .then((json) => setSelectedQuizSessions(json['sessions']))
+      .then((json) => setSelectedQuizSessions(json))
       .catch((error) => console.error(error));
   };
   // TODO: retrieve the ranking

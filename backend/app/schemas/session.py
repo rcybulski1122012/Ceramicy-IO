@@ -25,7 +25,3 @@ class UserSessionRankingOut(SchemaBase):
 
 class SessionListItemOut(SchemaBase):
     id: str
-
-
-class SessionListOut(SchemaBase):
-    sessions: list[SessionListItemOut]

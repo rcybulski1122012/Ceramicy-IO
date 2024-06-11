@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.session import Session, UserSession
 from app.models.user import User
 from app.services.quiz import get_quiz_by_id
-from app.schemas.session import UserSessionRankingOut, SessionListOut, SessionListItemOut
+from app.schemas.session import UserSessionRankingOut, SessionListItemOut
 from app.schemas.quiz_check import QuizCheckIn
 from app.services.quiz_check import check_files
 
@@ -109,11 +109,11 @@ async def assign_solution_to_user_session(
     await db_session.commit()
 
 
-async def get_sessions_by_quiz_id(db_session: AsyncSession, quiz_id: str) -> SessionListOut:
+async def get_sessions_by_quiz_id(db_session: AsyncSession, quiz_id: str) -> list[SessionListItemOut]:
     statement = select(Session).filter(Session.quiz_id == quiz_id)
     result = await db_session.execute(statement)
     sessions = result.scalars().all()
     if sessions is None:
         return []
-    response = SessionListOut(sessions=list(map(lambda s: SessionListItemOut(id=s.id), sessions)))
+    response = list(map(lambda s: SessionListItemOut(id=s.id), sessions))
     return response
